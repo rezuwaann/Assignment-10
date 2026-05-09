@@ -1,6 +1,7 @@
 import React from "react";
 
 const Partner = ({ partner }) => {
+    
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition p-5 flex flex-col gap-4 w-full border border-gray-100">
 
@@ -35,10 +36,12 @@ const Partner = ({ partner }) => {
       </div>
 
     
-      <button className="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 rounded-lg transition cursor-pointer">
+      <a  href={`/partner/${partner._id}`} className="mt-2 text-center font-semibold bg-black  text-white  text-sm py-2 rounded-lg transition cursor-pointer">
         View Profile
-      </button>
+      </a>
+
     </div>
+   
   );
 };
 

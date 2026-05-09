@@ -1,6 +1,7 @@
 import React, { use, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const Register = () => {
   const { signInWithGoogle, createUser } = use(AuthContext);
@@ -13,6 +14,13 @@ const Register = () => {
     const password = e.target.password.value;
     const photo = e.target.photo.value;
 
+    const newUser = {
+      name: name,
+      email: email,
+      profileImage: photo,
+      rating: 0,
+      partnerCount: 0,
+    };
     console.log(name, email, password, photo);
 
     if (password.length < 6) {
@@ -29,6 +37,15 @@ const Register = () => {
       .then((result) => {
         console.log(result);
 
+        axios
+          .post("http://localhost:3000/users", newUser)
+          .then((data) => {
+            console.log("after saving", data);
+          })
+          .then((error) => {
+            console.log(error);
+          });
+
         Swal.fire({
           position: "center",
           icon: "success",
@@ -36,7 +53,6 @@ const Register = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-
       })
       .catch((error) => {
         console.log(error);
@@ -49,19 +65,30 @@ const Register = () => {
         console.log(result);
 
         Swal.fire({
-  position: "center",
-  icon: "success",
-  title: "Your account has been created",
-  showConfirmButton: false,
-  timer: 1500
-});
+          position: "center",
+          icon: "success",
+          title: "Your account has been created",
+          showConfirmButton: false,
+          timer: 1500,
+        });
 
         const newUser = {
           name: result.user.displayName,
           email: result.user.email,
-          profileimage: result.user.photoURL,
+          profileImage: result.user.photoURL,
+          rating: 0,
+          partnerCount: 0,
         };
         console.log(newUser);
+
+        axios
+          .post("http://localhost:3000/users", newUser)
+          .then((data) => {
+            console.log("after saving", data);
+          })
+          .then((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);

@@ -25,7 +25,7 @@ const Navbar = () => {
 
       {user ? (
         <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1">
-          <a href="/login">Create Partner Profile</a>
+          <a href="/createaprofile">Create Partner Profile</a>
         </li>
       ) : null}
       {user ? (
@@ -78,7 +78,7 @@ const Navbar = () => {
               {links}
             </ul>
           </div>
-          <img src={logo} alt="" className="h-22 w-35" />
+          <img  src={logo} alt="" className="h-22 w-35" />
         </div>
         <div className="navbar-end hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-2">
@@ -96,7 +96,7 @@ const Navbar = () => {
       <div className="navbar  shadow-sm">
         <div className="navbar-start">
           <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+            <div tabIndex={0} role="button" className="btn btn-ghost xl:hidden">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -122,7 +122,7 @@ const Navbar = () => {
           </div>
           <img src={logo} alt="" className="h-22 w-35" />
         </div>
-        <div className="navbar-end hidden lg:flex">
+        <div className="navbar-end hidden xl:flex">
           <ul className="menu menu-horizontal px-1 gap-2">
            
               { links }

@@ -12,6 +12,8 @@ import Register from "./components/Register/Register.jsx";
 import AuthProvider from "./Context/AuthProvider.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import FindPartners from "./Pages/FindPartners.jsx";
+import PartnerDetails from "./components/PartnerDetails/PartnerDetails.jsx";
+import CreateAProfile from "./components/CreateAProfile/CreateAProfile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,20 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <FindPartners></FindPartners>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: `/partner/:id`,
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/users/${params.id}`),
+        element: <PartnerDetails></PartnerDetails>,
+      },
+      {
+        path: "/createaprofile",
+             element: (
+          <PrivateRoute>
+            <CreateAProfile></CreateAProfile>
           </PrivateRoute>
         ),
       },

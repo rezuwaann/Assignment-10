@@ -13,7 +13,7 @@ const FindPartners = () => {
   }, []);
   console.log(users);
   return (
-    <div className="grid grid-cols-2 w-11/12 mx-auto gap-3 p-5">
+    <div className="grid lg:grid-cols-2 w-11/12 mx-auto gap-3 p-5">
       {users.map((partner) => (
         <Partner key={partner._id} partner={partner}></Partner>
       ))}
