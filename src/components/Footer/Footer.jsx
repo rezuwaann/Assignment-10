@@ -1,16 +1,16 @@
 import React from "react";
-import logo from '../../assets/blacklogo.jpg'
+import logo from '../../assets/gg.png'
 const Footer = () => {
   return (
     <div>
-      <footer className="footer sm:footer-horizontal bg-neutral text-neutral-content p-10 mt-5">
-        <aside className="ml-3">
-          <img src={logo} className="w-12 h-12" alt="" />
-          <p className="w-6/12">
+      <footer className="footer  bg-neutral text-neutral-content flex flex-col lg:flex-row items-center justify-around p-10  mt-10">
+        <div>
+          <img src={logo} className="w-40 h-15" alt="" />
+          <p className="w-6/12 font-semibold">
             The premier student network for collaborative excellence and peer-to-peer specialized learning.
           </p>
-        </aside>
-        <nav>
+        </div>
+        <div>
           <h6 className="footer-title">Social</h6>
           <div className="grid grid-flow-col gap-4">
             <a>
@@ -47,7 +47,7 @@ const Footer = () => {
               </svg>
             </a>
           </div>
-        </nav>
+        </div>
       </footer>
       <p className="bg-neutral py-3 text-center">Copyright © {new Date().getFullYear()} - All right reserved</p>
       

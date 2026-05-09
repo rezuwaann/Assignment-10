@@ -7,11 +7,11 @@ const HowItWorks = () => {
         How It Works?
       </h1>
 
-      <div className="flex flex-col md:flex-row gap-5 mt-5">
+      <div className="flex flex-col md:flex-row gap-5 mt-10">
         
-          <div className="bg-white rounded-2xl p-8 flex flex-col lg:w-4/12 shadow-lg">
-            <div className="text-right mb-10">
-              <span className="text-7xl font-bold text-gray-200 ">
+          <div className="bg-white rounded-2xl p-8 flex flex-col lg:w-4/12 shadow-xl hover:shadow-2xl">
+            <div className="text-right mb-3">
+              <span className="text-7xl font-bold text-black ">
                 01
               </span>
             </div>
@@ -26,9 +26,9 @@ const HowItWorks = () => {
           </div>
         
         
-          <div className="bg-white rounded-2xl p-8 flex flex-col lg:w-4/12 shadow-lg">
-            <div className="text-right mb-10">
-              <span className="text-7xl font-bold text-gray-200 ">
+          <div className="bg-white rounded-2xl p-8 flex flex-col lg:w-4/12 shadow-xl hover:shadow-2xl">
+            <div className="text-right mb-3">
+              <span className="text-7xl font-bold text-black ">
                 02
               </span>
             </div>
@@ -43,9 +43,9 @@ const HowItWorks = () => {
           </div>
         
         
-          <div className="bg-white rounded-2xl p-8 flex flex-col lg:w-4/12 shadow-lg">
-            <div className="text-right mb-10">
-              <span className="text-7xl font-bold text-gray-200 ">
+          <div className="bg-white rounded-2xl p-8 flex flex-col lg:w-4/12 shadow-xl hover:shadow-2xl">
+            <div className="text-right mb-3">
+              <span className="text-7xl font-bold text-black ">
                 03
               </span>
             </div>

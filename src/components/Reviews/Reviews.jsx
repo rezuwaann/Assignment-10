@@ -10,10 +10,10 @@ const Reviews = () => {
         <h1 className="text-black font-bold text-3xl text-center">
           What Our Users Say
         </h1>
-        <div className="flex lg:flex-row flex-col gap-5 mt-5">
+        <div className="flex lg:flex-row flex-col gap-5 mt-10">
 
 
-          <div className=" bg-white  lg:w-4/12 p-5 space-y-8 shadow-xl rounded-2xl h-50">
+          <div className=" bg-white  lg:w-4/12 p-5 space-y-10 shadow-xl hover:shadow-2xl rounded-2xl h-55">
             <div className="flex gap-3">
               <img src={pp1} alt="" className="h-12 w-12 rounded-full" />
               <div>
@@ -29,7 +29,7 @@ const Reviews = () => {
             </div>
           </div>
 
-          <div className=" bg-white  lg:w-4/12 p-5 space-y-8 shadow-2xl rounded-2xl h-50">
+          <div className=" bg-white  lg:w-4/12 p-5 space-y-10 shadow-xl hover:shadow-2xl rounded-2xl h-55">
             <div className="flex gap-3">
               <img src={pp2} alt="" className="h-12 w-12 rounded-full" />
               <div>
@@ -45,7 +45,7 @@ const Reviews = () => {
             </div>
           </div>
 
-          <div className=" bg-white  lg:w-4/12 p-5 space-y-8 shadow-2xl rounded-2xl h-50">
+          <div className=" bg-white  lg:w-4/12 p-5 space-y-10 shadow-xl hover:shadow-2xl rounded-2xl h-55">
             <div className="flex gap-3">
               <img src={pp3} alt="" className="h-12 w-12 rounded-full" />
               <div>

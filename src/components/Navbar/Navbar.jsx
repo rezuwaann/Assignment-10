@@ -4,9 +4,9 @@ import logo from '../../assets/logo.png';
 const Navbar = () => {
 
     const links=<>
-    <li className="text-black font-bold hover:cursor-pointer">Home</li>
-    <li className="text-black font-bold hover:cursor-pointer">Find Partner</li>
-    <li className="text-black font-bold hover:cursor-pointer">Login</li>
+    <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1">Home</li>
+    <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1">Find Partner</li>
+    <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1"><a href="/login">Login</a></li>
     </>
   return (
     <div>
@@ -37,7 +37,7 @@ const Navbar = () => {
             {links}
             </ul>
           </div>
-        <img src={logo} alt="" className="h-18 w-30"/>
+        <img src={logo} alt="" className="h-22 w-35"/>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-2">
