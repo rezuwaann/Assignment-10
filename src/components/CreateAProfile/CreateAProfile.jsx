@@ -1,12 +1,12 @@
 import React, { use, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
-import { useLoaderData } from "react-router";
+
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const CreateAProfile = () => {
-  const { user, loading } = use(AuthContext);
-  const [userInfo, setUserInfo] = useState([]);
+  const { user } = use(AuthContext);
+  const [userInfo, setUserInfo] = useState({});
 
   const { name, email, profileImage, partnerCount, rating } = userInfo;
 
@@ -46,14 +46,24 @@ const CreateAProfile = () => {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:3000/specificuser?email=${user?.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUserInfo(data[0]);
-      });
+
+    axios.get(`http://localhost:3000/specificuser?email=${user?.email}`)
+    .then(res=>setUserInfo(res.data[0]))
+    .catch(error=>console.log(error))
+// console.log(userInfo)
+
+    // fetch)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setUserInfo(data[0]);
+    //   });
   }, [user]);
 
   console.log(userInfo);
+
+  if(!userInfo){
+    return <span className="loading loading-bars loading-xl"></span>
+  }
 
   return (
     <div>
