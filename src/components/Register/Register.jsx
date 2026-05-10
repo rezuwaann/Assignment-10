@@ -5,7 +5,7 @@ import axios from "axios";
 
 const Register = () => {
   const { signInWithGoogle, createUser } = use(AuthContext);
-  const [error, setError] = useState(" ");
+  const [err, setError] = useState(" ");
   const handleRegister = (e) => {
     e.preventDefault();
 
@@ -27,8 +27,10 @@ const Register = () => {
       setError("Password should be at least 6 characters long");
     } else if (!/[A-Z]/.test(password)) {
       setError("Password should contain at least one uppercase letter");
+      return;
     } else if (!/[a-z]/.test(password)) {
       setError("Password should contain at least one lowercase letter");
+      return;
     } else {
       setError("");
     }
@@ -123,7 +125,7 @@ const Register = () => {
             placeholder="Enter your password"
             name="password"
           />
-          <p className="text-red-600 font-semibold">{error}</p>
+          <p className="text-red-600 font-semibold">{err}</p>
           <label className="label">Photo URL</label>
           <input
             required
