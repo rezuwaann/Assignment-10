@@ -13,10 +13,10 @@ const ConnectedCard = ({ connection }) => {
   console.log(connection);
 
   return (
-   <div className="bg-white w-2/6 h-65 border border-gray-200 rounded-lg p-4  flex flex-col items-center justify-between text-black">
+   <div className="bg-white  h-65 border border-gray-200 rounded-lg   flex flex-col items-center justify-between text-black">
 
-  {/* Left Side - Info */}
-  <div className="flex-1 my-3 ">
+ 
+  <div className="flex-1 my-3 p-5">
     <div className="mb-2">
       <p className="text-lg font-semibold">{connectedName}</p>
       <p className="text-md text-gray-500">{connectedEmail}</p>
@@ -50,8 +50,8 @@ const ConnectedCard = ({ connection }) => {
     </div>
   </div>
 
-  {/* Right Side - Buttons */}
-  <div className="flex  gap-2 ml-4">
+  
+  <div className="flex  gap-2 ml-4 mb-5">
     <button className="text-md font-medium text-white bg-black rounded px-3 py-1.5 hover:bg-gray-800 transition-colors">
       Update
     </button>

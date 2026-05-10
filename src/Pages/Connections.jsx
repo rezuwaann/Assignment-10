@@ -14,7 +14,7 @@ const [connections,setConnections]=useState([])
     },[])
     // console.log(connections)
     return (
-        <div  className='grid mx-auto w-11/12'>
+        <div  className='grid md:grid-cols-2 lg:grid-cols-3 gap-10 my-10 mx-auto w-11/12'>
             {
                 connections.map((connection,index)=><ConnectedCard key={index+1} connection={connection}></ConnectedCard>)
             }

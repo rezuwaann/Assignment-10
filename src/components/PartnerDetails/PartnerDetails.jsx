@@ -6,11 +6,11 @@ import Swal from "sweetalert2";
 
 const PartnerDetails = () => {
   const { user } = use(AuthContext);
+  const [exists, setExists] = useState(false);
   const partner = useLoaderData();
-  console.log(partner);
-  const partnerstotal=partner?.partnerCount;
-const[currentPartner,setCurrentPartner]=useState(partnerstotal)
-
+  // console.log(partner);
+  const partnerstotal = partner?.partnerCount;
+  const [currentPartner, setCurrentPartner] = useState(partnerstotal);
 
   //  console.log(user?.email)
   const handlePartnerRequest = async () => {
@@ -29,10 +29,10 @@ const[currentPartner,setCurrentPartner]=useState(partnerstotal)
     // console.log(date);
 
     const newConnection = {
-      connectorNmae:user?.name,
-      connectedName:partner?.name,
-      connectorEmail:user?.email,
-      connectedEmail:partner?.email,
+      connectorName: user?.displayName,
+      connectedName: partner?.name,
+      connectorEmail: user?.email,
+      connectedEmail: partner?.email,
       connectedAt: date,
       studyMode: userInfo?.studyMode,
       availabilityTime: userInfo?.availabilityTime,
@@ -41,17 +41,24 @@ const[currentPartner,setCurrentPartner]=useState(partnerstotal)
       location: userInfo?.location,
     };
 
+    // const res = await axios.get(`http://localhost:3000/connections`, {
+    //   params: { connectorEmail: user?.email, connectedEmail: partner?.email },
+    // });
+// console.log(newConnection)
+
+    console.log(res.data);
     const myConnections = userInfo.partnerCount;
-    console.log(myConnections);
+    // console.log(myConnections);
     const partnerConnections = partner.partnerCount;
-    console.log(partnerConnections);
+    // console.log(partnerConnections);
 
     //  axios.get(`http://localhost:3000/users/%{connectorId}`)
     //   .then()
 
     //   axios.patch(`http://localhost:3000/users/${connectedId}`)
+    // console.log(exists);
 
-    axios
+    await axios
       .post(`http://localhost:3000/connections`, newConnection)
       .then((res) => {
         if (res.data.insertedId) {
@@ -69,12 +76,13 @@ const[currentPartner,setCurrentPartner]=useState(partnerstotal)
             `http://localhost:3000/specificuser?email=${user?.email}`,
             { partnerCount: myConnections + 1 },
           );
+
           axios.patch(
             `http://localhost:3000/specificuser?email=${partner?.email}`,
             { partnerCount: partnerConnections + 1 },
           );
 
-          setCurrentPartner(currentPartner+1)
+          setCurrentPartner(currentPartner + 1);
         } else {
           console.log(res.data);
           Swal.fire({
