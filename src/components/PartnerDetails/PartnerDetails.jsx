@@ -1,13 +1,15 @@
-import React, { use } from "react";
+import React, { use, useState } from "react";
 import { useLoaderData } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const PartnerDetails = () => {
-
   const { user } = use(AuthContext);
   const partner = useLoaderData();
+  const partnerstotal=partner?.partnerCount;
+const[currentPartner,setCurrentPartner]=useState(partnerstotal)
+
 
   //  console.log(user?.email)
   const handlePartnerRequest = async () => {
@@ -28,32 +30,56 @@ const PartnerDetails = () => {
     const newConnection = {
       connectorId: connectorId,
       connectedId: connectedId,
+      connectorEmail:user?.email,
+      connectedEmail:partner?.email,
       connectedAt: date,
     };
 
-    
-    axios.post(`http://localhost:3000/connections`, newConnection)
-    .then((res)=> {
-      if (res.data.inserted) {
-        Swal.fire({
+    const myConnections = userInfo.partnerCount;
+    console.log(myConnections);
+    const partnerConnections = partner.partnerCount;
+    console.log(partnerConnections);
+
+    //  axios.get(`http://localhost:3000/users/%{connectorId}`)
+    //   .then()
+
+    //   axios.patch(`http://localhost:3000/users/${connectedId}`)
+
+    axios
+      .post(`http://localhost:3000/connections`, newConnection)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
             position: "center",
             icon: "success",
             title: "Your request has been sent",
             showConfirmButton: false,
             timer: 1500,
           });
-          
-          console.log(newConnection)
-      }else{
-        Swal.fire({
+          console.log(res.data);
+          console.log(newConnection);
+
+          axios.patch(
+            `http://localhost:3000/specificuser?email=${user?.email}`,
+            { partnerCount: myConnections + 1 },
+          );
+          axios.patch(
+            `http://localhost:3000/specificuser?email=${partner?.email}`,
+            { partnerCount: partnerConnections + 1 },
+          );
+
+          setCurrentPartner(currentPartner+1)
+        } else {
+          console.log(res.data);
+          Swal.fire({
             position: "center",
             icon: "warning",
             title: "Your have already sent request",
             showConfirmButton: false,
             timer: 1500,
           });
-      }
-    })
+        }
+      });
   };
   // console.log(partner);
 
@@ -116,7 +142,7 @@ const PartnerDetails = () => {
           <span className="font-bold text-black text-lg lg:text-2xl">
             Partners:
           </span>
-          <p className="text-gray-600">{partner.partnerCount}</p>
+          <p className="text-gray-600">{currentPartner}</p>
         </div>
       </div>
 

@@ -1,16 +1,17 @@
 import React, { use, useEffect, useState } from "react";
-import { AuthContext } from "../../Context/AuthContext";
+import { AuthContext } from "../Context/AuthContext";
 
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const CreateAProfile = () => {
+const UpdateProfile = () => {
   const { user } = use(AuthContext);
   const [userInfo, setUserInfo] = useState({});
 
   const { name, email, profileImage, partnerCount, rating } = userInfo;
 
   console.log(userInfo.experienceLevel);
+  
   const handleCreateUser = (e) => {
     e.preventDefault();
     const studymode = e.target.studymode.value;
@@ -22,12 +23,6 @@ const CreateAProfile = () => {
     console.log(studymode, availability, subject, experience, location);
 
     const updatedData = {
-      profileId:userInfo?._id,
-      name:userInfo?.name,
-      profileImage:userInfo?.profileImage,
-      email:userInfo?.email,
-      rating:userInfo?.rating,
-      partnerCount:userInfo?.partnerCount,
       studyMode: studymode,
       availabilityTime: availability,
       subject: subject,
@@ -35,35 +30,20 @@ const CreateAProfile = () => {
       location: location,
     };
 
-    axios.post(
-      `http://localhost:3000/studyprofiles`,
+    axios.patch(
+      `http://localhost:3000/specificuser?email=${user?.email}`,
       updatedData,
-    )
-    .then(res=>{console.log(res)
-      if (res.data.insertedId) {
-         Swal.fire({
+    );
+
+    Swal.fire({
       position: "center",
       icon: "success",
-      title:  "Your profile has been created",
-      showConfirmButton: false,
-      timer: 1500,
-    })
-      }
-      else{
-         Swal.fire({
-      position: "center",
-      icon: "warning",
-      title:  "You already have a profile with this information",
+      title: userInfo.subject
+        ? "Your profile has been updated"
+        : "Your profile has been created",
       showConfirmButton: false,
       timer: 1500,
     });
-      }
-    })
-    .catch(error=>console.log(error))
-
-  
-
-   
   };
 
   useEffect(() => {
@@ -227,7 +207,7 @@ const CreateAProfile = () => {
 
         <div className="flex justify-center">
           <button type="submit" className="btn mx-auto mt-5">
-             Create Profile
+            {userInfo.subject ? "Update " : "Create "} Profile
           </button>
         </div>
       </form>
@@ -235,4 +215,4 @@ const CreateAProfile = () => {
   );
 };
 
-export default CreateAProfile;
+export default UpdateProfile;

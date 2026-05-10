@@ -54,6 +54,7 @@ const Login = () => {
             </span>
           </p>
           <button className="btn btn-neutral mt-4">Login</button>
+          <p className="font-bold">Forgot Password?</p>
 
           <button
             onClick={handleGoogleSignIn}
