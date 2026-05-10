@@ -36,7 +36,7 @@ const Partner = ({ partner }) => {
       </div>
 
     
-      <a  href={`/partner/${partner._id}`} className="mt-2 text-center font-semibold bg-black  text-white  text-sm py-2 rounded-lg transition cursor-pointer">
+      <a  href={`/partner/${partner.profileId}`} className="mt-2 text-center font-semibold bg-black  text-white  text-sm py-2 rounded-lg transition cursor-pointer">
         View Profile
       </a>
 

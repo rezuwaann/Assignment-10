@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Partner from "../components/Partner/Partner";
+import axios from "axios";
 
 const FindPartners = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/users")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data);
+    axios.get("http://localhost:3000/studyprofiles")
+      .then((res) =>{
+        
+        setUsers(res.data);
+      // console.log(users)
+    })
+      .catch((error) => {
+       console.log(error);
       });
   }, []);
   console.log(users);

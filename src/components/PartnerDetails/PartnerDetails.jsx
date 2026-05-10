@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 const PartnerDetails = () => {
   const { user } = use(AuthContext);
   const partner = useLoaderData();
+  console.log(partner);
   const partnerstotal=partner?.partnerCount;
 const[currentPartner,setCurrentPartner]=useState(partnerstotal)
 
@@ -19,20 +20,25 @@ const[currentPartner,setCurrentPartner]=useState(partnerstotal)
 
     const userInfo = res.data[0];
     // console.log(userInfo);
-    const connectedId = partner?._id;
+    // const connectedId = partner?._id;
     // console.log("connected ", connectedId);
     //  console.log(userInfo);
-    const connectorId = userInfo?._id;
+    // const connectorId = userInfo?._id;
     // console.log("connector ", connectorId);
     const date = new Date().toLocaleDateString();
     // console.log(date);
 
     const newConnection = {
-      connectorId: connectorId,
-      connectedId: connectedId,
+      connectorNmae:user?.name,
+      connectedName:partner?.name,
       connectorEmail:user?.email,
       connectedEmail:partner?.email,
       connectedAt: date,
+      studyMode: userInfo?.studyMode,
+      availabilityTime: userInfo?.availabilityTime,
+      subject: userInfo?.subject,
+      experienceLevel: userInfo?.experienceLevel,
+      location: userInfo?.location,
     };
 
     const myConnections = userInfo.partnerCount;
