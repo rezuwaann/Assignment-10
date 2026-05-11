@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 
-const ConnectedCard = ({ connection }) => {
+const ConnectedCard = ({ connection,deleteCard }) => {
   const {
     _id,
     connectedName,
@@ -17,35 +17,36 @@ const ConnectedCard = ({ connection }) => {
     status,
   } = connection;
 
-  
-  const [currentSchedule,setPreferredSchedule]=useState(preferredSchedule)
-  const [currentGoal,setGoal]=useState(goal)
+  const handleDelete = () => {
+    deleteCard(_id)
+  };
+
+  const [currentSchedule, setPreferredSchedule] = useState(preferredSchedule);
+  const [currentGoal, setGoal] = useState(goal);
   console.log(connection);
 
-//   const [updatedInfo,setUpdatedInfo]=useState({})
+  //   const [updatedInfo,setUpdatedInfo]=useState({})
 
-  const updateValue=async(e)=>{
+  const updateValue = async (e) => {
     e.preventDefault();
     const newPreferredSchedule = e.target.preferredSchedule.value;
     const newGoal = e.target.goal.value;
 
-    
-      const updatedInfo ={
+    const updatedInfo = {
       preferredSchedule: newPreferredSchedule,
       goal: newGoal,
     };
-//   }
-//   const handleUpdate = async (e) => {
-//     e.preventDefault();
+    //   }
+    //   const handleUpdate = async (e) => {
+    //     e.preventDefault();
     // const preferredSchedule = e.target.preferredSchedule.value;
     // const goal = e.target.goal.value;
-  
+
     await axios
       .patch(`http://localhost:3000/connections?id=${_id}`, updatedInfo)
       .then((res) => {
-
-        setPreferredSchedule(updatedInfo.preferredSchedule)
-    setGoal(updatedInfo.goal)
+        setPreferredSchedule(updatedInfo.preferredSchedule);
+        setGoal(updatedInfo.goal);
 
         if (res.data.modifiedCount) {
           Swal.fire({
@@ -55,8 +56,8 @@ const ConnectedCard = ({ connection }) => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log(updatedInfo)
-          console.log(res.data)
+          console.log(updatedInfo);
+          console.log(res.data);
           document.getElementById(`my_modal_${_id}`).close();
         } else {
           Swal.fire({
@@ -66,15 +67,13 @@ const ConnectedCard = ({ connection }) => {
             showConfirmButton: false,
             timer: 1500,
           });
-               console.log('sorry',res.data)
-console.log(updatedInfo)
+          console.log("sorry", res.data);
+          console.log(updatedInfo);
           document.getElementById(`my_modal_${_id}`).close();
         }
       });
   };
 
-
-  
   return (
     <div className="bg-white  h-80 border border-gray-200 rounded-lg   flex flex-col items-center justify-between text-black">
       <div className="flex-1 my-3 p-5">
@@ -119,9 +118,7 @@ console.log(updatedInfo)
 
           <div className="flex justify-between gap-4 col-span-1">
             <span className="text-gray-400">Preffered Schedule</span>
-            <span className="font-medium text-gray-800">
-              {currentSchedule}
-            </span>
+            <span className="font-medium text-gray-800">{currentSchedule}</span>
           </div>
           <div className="flex justify-between gap-4 col-span-1">
             <span className="text-gray-400">Target Goal</span>
@@ -136,7 +133,9 @@ console.log(updatedInfo)
             {/* Open the modal using document.getElementById('ID').showModal() method */}
             <div
               className="text-white"
-              onClick={() => document.getElementById(`my_modal_${_id}`).showModal()}
+              onClick={() =>
+                document.getElementById(`my_modal_${_id}`).showModal()
+              }
             >
               {" "}
               Update
@@ -170,7 +169,7 @@ console.log(updatedInfo)
                 <div className="modal-action">
                   <div method="dialog">
                     {/* if there is a button in div, it will close the modal */}
-                    <button  type="submit" className="btn">
+                    <button type="submit" className="btn">
                       Update
                     </button>
                   </div>
@@ -178,11 +177,11 @@ console.log(updatedInfo)
               </div>
             </dialog>
           </form>
-
-
-
         </div>
-        <button onClick={} className="text-md font-medium text-white bg-black rounded px-3 py-1.5 hover:bg-gray-800 transition-colors">
+        <button
+          onClick={handleDelete}
+          className="text-md font-medium text-white bg-black rounded px-3 py-1.5 hover:bg-gray-800 transition-colors"
+        >
           Delete
         </button>
       </div>
