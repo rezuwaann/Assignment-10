@@ -3,12 +3,14 @@ import { AuthContext } from "../../Context/AuthContext";
 
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const CreateAProfile = () => {
   const { user } = use(AuthContext);
   const [userInfo, setUserInfo] = useState({});
 
-  const { name, email, profileImage, partnerCount, rating,location } = userInfo;
+  const { name, email, profileImage, partnerCount, rating, location } =
+    userInfo;
 
   console.log(userInfo.experienceLevel);
   const handleCreateUser = (e) => {
@@ -40,30 +42,37 @@ const CreateAProfile = () => {
       .then((res) => {
         console.log(res);
         if (res.data.insertedId) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Your profile has been created",
-            showConfirmButton: false,
-            timer: 1500,
+          toast.success("Profile created", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
           });
         } else {
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "You already have a profile with this information",
-            showConfirmButton: false,
-            timer: 1500,
+          
+        toast.error("You already created an profile with this info", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
           });
         }
       })
       .catch((error) => console.log(error));
 
-axios
-      .patch(`http://localhost:3000/specificuser?email=${email}`, {
-        location:location,
-    
-      })
+    axios.patch(`http://localhost:3000/specificuser?email=${email}`, {
+      location: location,
+    });
   };
 
   useEffect(() => {
@@ -88,6 +97,7 @@ axios
 
   return (
     <div>
+      <ToastContainer/>
       <div className="gap-5 p-7 shadow-xl flex items-center hover:shadow-2xl my-5 bg-white w-7/12 mx-auto">
         <div>
           <img

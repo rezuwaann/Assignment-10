@@ -27,35 +27,43 @@ const router = createBrowserRouter([
       { path: "/register", Component: Register },
       {
         path: "/findpartners",
-        element: (
-          <PrivateRoute>
-            <FindPartners></FindPartners>
-          </PrivateRoute>
-        ),
+        element: <FindPartners></FindPartners>,
       },
       {
         path: `/partner/:id`,
         loader: ({ params }) =>
           fetch(`http://localhost:3000/users/${params.id}`),
-        element: <PartnerDetails></PartnerDetails>,
+        element: (
+          <PrivateRoute>
+            <PartnerDetails></PartnerDetails>
+          </PrivateRoute>
+        ),
       },
       {
         path: "/createaprofile",
-             element: (
+        element: (
           <PrivateRoute>
             <CreateAProfile></CreateAProfile>
           </PrivateRoute>
         ),
       },
       {
-        path:'/profile',
-        element:<PrivateRoute><Profile></Profile></PrivateRoute>
+        path: "/profile",
+        element: (
+          <PrivateRoute>
+            <Profile></Profile>
+          </PrivateRoute>
+        ),
       },
       {
-        path:'/connections',
-        
-        element:<PrivateRoute><Connections></Connections></PrivateRoute>
-      }
+        path: "/connections",
+
+        element: (
+          <PrivateRoute>
+            <Connections></Connections>
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);

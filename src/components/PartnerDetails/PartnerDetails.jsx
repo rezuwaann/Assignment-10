@@ -1,42 +1,52 @@
-import React, { use, useState } from "react";
-import { useLoaderData } from "react-router";
+import React, { use, useEffect, useState } from "react";
+import { Navigate, useLoaderData, useNavigate } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const PartnerDetails = () => {
   const { user } = use(AuthContext);
   const [exists, setExists] = useState(false);
 
+  const [myStudyProfiles, setMyStudyProfiles] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/studyprofiles?email=${user?.email}`)
+      .then((res) => {
+        setMyStudyProfiles(res.data);
+      });
+  }, [user]);
   // const [formValue, setFormValue] = useState({});
 
   // const handleFormValue = (e) => {
   //   e.preventDefault();
 
-
   //   setFormValue({
-     
+
   //   });
   // };
   const partner = useLoaderData();
   // console.log(partner);
   const partnerstotal = partner?.partnerCount;
   const [currentPartner, setCurrentPartner] = useState(partnerstotal);
-console.log('partner ',partner?.partnerCount)
+  console.log("partner ", partner?.partnerCount);
 
   //  console.log(user?.email)
   const handlePartnerRequest = async (e) => {
     e.preventDefault();
     const preferredSchedule = e.target.preferredSchedule.value;
     const goal = e.target.goal.value;
-    
+
     const res = await axios.get(
       `http://localhost:3000/specificuser?email=${user?.email}`,
     );
-    
+
     const userInfo = res.data[0];
-    console.log('userdetailsfull',userInfo) //is is printing and partnerCount is inside it
-    console.log('user',userInfo?.partnerCount) //but it is showing undefined why
+    console.log("userdetailsfull", userInfo); //is is printing and partnerCount is inside it
+    console.log("user", userInfo?.partnerCount); //but it is showing undefined why
     // console.log(userInfo);
     // const connectedId = partner?._id;
     // console.log("connected ", connectedId);
@@ -51,20 +61,20 @@ console.log('partner ',partner?.partnerCount)
       connectedName: partner?.name,
       connectorEmail: userInfo?.email,
       connectedEmail: partner?.email,
-      connectorPartner:userInfo?.partnerCount,
-      connectedPartner:partner?.partnerCount,
+      connectorPartner: userInfo?.partnerCount,
+      connectedPartner: partner?.partnerCount,
       connectedAt: date,
       studyMode: userInfo?.studyMode,
       availabilityTime: userInfo?.availabilityTime,
       subject: userInfo?.subject,
       experienceLevel: userInfo?.experienceLevel,
       location: userInfo?.location,
- goal: goal,
+      goal: goal,
       preferredSchedule: preferredSchedule,
       status: "pending",
     };
 
-    console.log('user',user)
+    console.log("user", user);
     // const connectionInfo = {
     //   ...newConnection,
     //   ...formValue,
@@ -87,21 +97,40 @@ console.log('partner ',partner?.partnerCount)
     //   axios.patch(`http://localhost:3000/users/${connectedId}`)
     // console.log(exists);
 
+    if (myStudyProfiles.length === 0) {
+      document.getElementById("my_modal_1").close();
+      toast.error("Please create a profile first", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+
+      navigate("/createaprofile");
+      return;
+    }
+
     await axios
       .post(`http://localhost:3000/connections`, newConnection)
       .then((res) => {
-
-  document.getElementById("my_modal_1").close();
-
-
+        document.getElementById("my_modal_1").close();
 
         if (res.data.insertedId) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Your request has been sent",
-            showConfirmButton: false,
-            timer: 1500,
+          toast.success("Request Sent", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
           });
           console.log(res.data);
           console.log(newConnection);
@@ -118,26 +147,29 @@ console.log('partner ',partner?.partnerCount)
 
           setCurrentPartner(currentPartner + 1);
         } else {
-
-
-  document.getElementById("my_modal_1").close();
+          document.getElementById("my_modal_1").close();
 
           console.log(res.data);
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Your have already sent request",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+        toast.error("Already sent a request", {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                  });
         }
       });
   };
   // console.log(partner);
 
   return (
-    <div className="my-10 w-11/12 lg:w-8/12 space-y-5 text-black mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col gap-5 h-170 md:h-130">
-      <div className="flex items-center gap-4">
+    <div className="my-10 w-11/12 lg:w-8/12 space-y-5 text-black mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col gap-5  md:h-170 h-130">
+      <ToastContainer></ToastContainer>
+     <div className="flex items-center gap-4">
         <img
           src={partner.profileImage}
           alt={partner.name}
@@ -154,7 +186,7 @@ console.log('partner ',partner?.partnerCount)
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 text-lg">
+      <div className="grid grid-cols-2 gap-4 text-lg">
         <div>
           <span className="font-bold text-black text-lg lg:text-2xl">
             Subject:
@@ -210,7 +242,7 @@ console.log('partner ',partner?.partnerCount)
         
       </button> */}
 
-      <form onSubmit={handlePartnerRequest} >
+      <form onSubmit={handlePartnerRequest}>
         {/* Open the modal using document.getElementById('ID').showModal() method */}
         <button
           className="btn"
@@ -244,13 +276,14 @@ console.log('partner ',partner?.partnerCount)
             <br />
 
             <div className="modal-action">
-              <div method="dialog" >
+              <div method="dialog">
                 {/* if there is a button in div, it will close the modal */}
                 <button type="submit" className="btn">
                   Done
                 </button>
               </div>
             </div>
+            
           </div>
         </dialog>
       </form>

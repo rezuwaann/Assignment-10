@@ -49,7 +49,15 @@ const Navbar = () => {
         ''
       ) : (
         <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1">
-          <a href="/login">Log In</a>
+          <a href="/login">Log In </a>
+        </li>
+      )}
+      
+      {user ? (
+        ''
+      ) : (
+        <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1">
+          <a href="/register"> Register</a>
         </li>
       )}
     </>
@@ -143,7 +151,7 @@ const Navbar = () => {
               <div tabIndex={0} role="" className=" m-1">
                 <img
                   src={userInfo?.profileImage}
-                  className="w-22 h-15 rounded-full border-gray-500 border-2"
+                  className="w-25 h-15 rounded-full border-gray-500 border-2"
                   alt=""
                 />
               </div>
@@ -152,12 +160,12 @@ const Navbar = () => {
                 className="dropdown-content menu bg-black rounded-box z-1 w-52 p-2 shadow-sm"
               >
                 <li>
-                 <Link to={"/profile"}>
+                 <Link className="font-semibold" to={"/profile"}>
                     Profie
                   </Link>
                 </li>
                 <li>
-                  <Link onClick={handleSignOut} to={"/login"}>
+                  <Link className="font-semibold" onClick={handleSignOut} to={"/login"}>
                     Log out
                   </Link>
                 </li>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 
 const ConnectedCard = ({ connection, deleteCard }) => {
@@ -19,31 +20,51 @@ const ConnectedCard = ({ connection, deleteCard }) => {
   } = connection;
 
   const handleDelete = async () => {
-    deleteCard(_id);
 
-    const connector =await axios.get(
+
+     toast.success("Deleted", {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                  });
+
+
+    await deleteCard(_id);
+
+
+    const connector = await axios.get(
       `http://localhost:3000/specificuser?email=${connectorEmail}`,
     );
     const connectorInfo = connector.data;
-    const connected =await axios.get(
+    const connected = await axios.get(
       `http://localhost:3000/specificuser?email=${connectedEmail}`,
     );
     const connectedInfo = connected.data;
 
-    console.log(connectorInfo[0]?.partnerCount,connectedInfo[0]?.partnerCount)
+    console.log(connectorInfo[0]?.partnerCount, connectedInfo[0]?.partnerCount);
 
     await axios.patch(
       `http://localhost:3000/specificuser?email=${connectorEmail}`,
-      { partnerCount:(connectorInfo[0]?.partnerCount)-1},
+      { partnerCount: connectorInfo[0]?.partnerCount - 1 },
     );
     await axios.patch(
       `http://localhost:3000/specificuser?email=${connectedEmail}`,
-      { partnerCount:(connectedInfo[0]?.partnerCount)-1},
+      { partnerCount: connectedInfo[0]?.partnerCount - 1 },
     );
+
+    
   };
 
   const [currentSchedule, setPreferredSchedule] = useState(preferredSchedule);
   const [currentGoal, setGoal] = useState(goal);
+  const [currentStatus, setStatus] = useState(status);
+
   console.log(connection);
 
   //   const [updatedInfo,setUpdatedInfo]=useState({})
@@ -52,10 +73,24 @@ const ConnectedCard = ({ connection, deleteCard }) => {
     e.preventDefault();
     const newPreferredSchedule = e.target.preferredSchedule.value;
     const newGoal = e.target.goal.value;
+    const status = e.target.status.value;
+
+       if (status === "Status") {
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Please select a status",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          document.getElementById(`my_modal_${_id}`).close();
+          return;
+        }
 
     const updatedInfo = {
       preferredSchedule: newPreferredSchedule,
       goal: newGoal,
+      status: status,
     };
     //   }
     //   const handleUpdate = async (e) => {
@@ -68,15 +103,21 @@ const ConnectedCard = ({ connection, deleteCard }) => {
       .then((res) => {
         setPreferredSchedule(updatedInfo.preferredSchedule);
         setGoal(updatedInfo.goal);
+        setStatus(updatedInfo.status);
 
+     
         if (res.data.modifiedCount) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Updated successfully",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+            toast.success("Updated", {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                  });
           console.log(updatedInfo);
           console.log(res.data);
           document.getElementById(`my_modal_${_id}`).close();
@@ -96,7 +137,8 @@ const ConnectedCard = ({ connection, deleteCard }) => {
   };
 
   return (
-    <div className="bg-white  h-80 border border-gray-200 rounded-lg   flex flex-col items-center justify-between text-black">
+    <div className="bg-white  h-80 border border-gray-200 rounded-lg  shadow-xl hover:shadow-2xl flex flex-col items-center justify-between text-black">
+      <ToastContainer></ToastContainer>
       <div className="flex-1 my-3 p-5">
         <div className="mb-2 flex justify-between">
           <div>
@@ -105,7 +147,9 @@ const ConnectedCard = ({ connection, deleteCard }) => {
           </div>
 
           <div>
-            <p className="rounded-lg bg-red-500 text-white p-2">{status}</p>
+            <p className="rounded-lg bg-red-500 text-white p-2">
+              {currentStatus}
+            </p>
           </div>
         </div>
 
@@ -164,9 +208,10 @@ const ConnectedCard = ({ connection, deleteCard }) => {
             <dialog id={`my_modal_${_id}`} className="modal ">
               <div className="bg-[#f5f5f5] p-5">
                 <p className="py-4">
-                  Press ESC key or click the button below to close
+                  Update the information Here and press ESC to close
                 </p>
-
+<label htmlFor="" className="label">Preffered Location</label>
+<br /><br />
                 <input
                   type="text"
                   name="preferredSchedule"
@@ -177,6 +222,8 @@ const ConnectedCard = ({ connection, deleteCard }) => {
                 />
                 <br />
                 <br />
+                <label htmlFor="" className="label">Goal</label>
+<br /><br />
                 <input
                   type="text"
                   name="goal"
@@ -186,7 +233,20 @@ const ConnectedCard = ({ connection, deleteCard }) => {
                   required
                 />
                 <br />
+                <br />
 
+                <select
+                  defaultValue="Status"
+                  className="select bg-white "
+                  name="status"
+                >
+                  <option disabled={true}> Status</option>
+                  <option>Pending</option>
+                  <option>Accepted</option>
+                  <option>Completed</option>
+                </select>
+
+                <br />
                 <div className="modal-action">
                   <div method="dialog">
                     {/* if there is a button in div, it will close the modal */}

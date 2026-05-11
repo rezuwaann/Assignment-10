@@ -1,11 +1,14 @@
 import React, { use } from "react";
 import { AuthContext } from "../../Context/AuthContext";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const form = location.state || "/";
+
+  console.log(location, form);
 
   const { signInUser, signInWithGoogle, user, setUser } = use(AuthContext);
 
@@ -22,9 +25,28 @@ const Login = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     signInUser(email, password).then((result) => {
-      setUser(result.user);
-      navigate(form);
-    });
+      console.log(result);
+      if (result.user) {
+        setUser(result.user);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Successfully logged in",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(form);
+      }
+    })
+    .catch((error)=>{
+        Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Please provide valid email and password",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+      })
   };
 
   return (
@@ -50,7 +72,9 @@ const Login = () => {
           <p>
             Don't have and accout?{" "}
             <span className="underline font-semibold">
-              <a href="/register">Register</a>
+              <Link state={form} to="/register">
+                Register
+              </Link>
             </span>
           </p>
           <button className="btn btn-neutral mt-4">Login</button>

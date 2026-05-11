@@ -2,10 +2,17 @@ import React, { use, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { Link, useLocation, useNavigate } from "react-router";
 
 const Register = () => {
   const { signInWithGoogle, createUser } = use(AuthContext);
   const [err, setError] = useState(" ");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const form = location.state || "/";
+
+  console.log(location, form);
+
   const handleRegister = (e) => {
     e.preventDefault();
 
@@ -55,9 +62,19 @@ const Register = () => {
           showConfirmButton: false,
           timer: 1500,
         });
+
+        navigate(form);
       })
       .catch((error) => {
         console.log(error);
+
+         Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "An account already exists with this email",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       });
   };
 
@@ -99,7 +116,7 @@ const Register = () => {
   return (
     <div>
       <form onSubmit={handleRegister}>
-        <fieldset className="fieldset text-black bg-white rounded-box w-xs shadow-xl p-4 my-10 mx-auto space-y-3 ">
+        <fieldset className="fieldset text-black bg-white rounded-box w-sm shadow-xl p-4 my-10 mx-auto space-y-3 ">
           <label className="label">Name</label>
           <input
             required
@@ -138,7 +155,7 @@ const Register = () => {
           <p>
             Already have an account?{" "}
             <span className="underline font-semibold">
-              <a href="/login">Login</a>
+              <Link to="/login">Login</Link>
             </span>
           </p>
           <button className="btn btn-neutral mt-4">Register</button>
