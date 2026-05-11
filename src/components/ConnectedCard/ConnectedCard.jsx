@@ -2,11 +2,12 @@ import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 
-const ConnectedCard = ({ connection,deleteCard }) => {
+const ConnectedCard = ({ connection, deleteCard }) => {
   const {
     _id,
     connectedName,
     subject,
+    connectorEmail,
     connectedEmail,
     studyMode,
     availabilityTime,
@@ -17,8 +18,28 @@ const ConnectedCard = ({ connection,deleteCard }) => {
     status,
   } = connection;
 
-  const handleDelete = () => {
-    deleteCard(_id)
+  const handleDelete = async () => {
+    deleteCard(_id);
+
+    const connector =await axios.get(
+      `http://localhost:3000/specificuser?email=${connectorEmail}`,
+    );
+    const connectorInfo = connector.data;
+    const connected =await axios.get(
+      `http://localhost:3000/specificuser?email=${connectedEmail}`,
+    );
+    const connectedInfo = connected.data;
+
+    console.log(connectorInfo[0]?.partnerCount,connectedInfo[0]?.partnerCount)
+
+    await axios.patch(
+      `http://localhost:3000/specificuser?email=${connectorEmail}`,
+      { partnerCount:(connectorInfo[0]?.partnerCount)-1},
+    );
+    await axios.patch(
+      `http://localhost:3000/specificuser?email=${connectedEmail}`,
+      { partnerCount:(connectedInfo[0]?.partnerCount)-1},
+    );
   };
 
   const [currentSchedule, setPreferredSchedule] = useState(preferredSchedule);

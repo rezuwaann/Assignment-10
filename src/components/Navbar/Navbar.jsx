@@ -46,12 +46,7 @@ const Navbar = () => {
       ) : null}
 
       {user ? (
-        <li
-          onClick={handleSignOut}
-          className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1"
-        >
-          <a href="/login">Log out</a>
-        </li>
+        ''
       ) : (
         <li className="text-black text-lg font-bold cursor-pointer hover:bg-black hover:text-white hover:rounded-lg p-1">
           <a href="/login">Log In</a>

@@ -27,7 +27,7 @@ const CreateAProfile = () => {
       profileImage: userInfo?.profileImage,
       email: userInfo?.email,
       rating: userInfo?.rating,
-      partnerCount: userInfo?.partnerCount,
+      // partnerCount: userInfo?.partnerCount,
       studyMode: studymode,
       availabilityTime: availability,
       subject: subject,

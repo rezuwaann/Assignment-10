@@ -3,6 +3,7 @@ import React, { use, useEffect, useState } from "react";
 import ConnectedCard from "../components/ConnectedCard/ConnectedCard";
 import { AuthContext } from "../Context/AuthContext";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 const Connections = () => {
   const { user } = use(AuthContext);
@@ -33,6 +34,19 @@ const Connections = () => {
       .catch((err) => console.log(err));
   }, [user]);
   // console.log(connections)
+
+  if (connections.length === 0) {
+    return (
+      <div className=" h-screen flex justify-center items-center  text-black rounded-lg p-6 text-center">
+        <div className="flex bg-white justify-center h-1/2 w-8/12 mx-auto items-center flex-col">
+          <h1 className="text-3xl font-bold">You don't have any connections</h1>
+          <p className="mt-2 text-lg">
+            Please <Link className="underline" to={'/createaprofile'}>create a profile</Link> and make connections
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 my-10 mx-auto w-11/12">
       {connections.map((connection, index) => (

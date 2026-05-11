@@ -1,7 +1,7 @@
 import React from "react";
 
 const Partner = ({ partner }) => {
-    
+    console.log(partner.name,partner.profileId)
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition p-5 flex flex-col gap-4 w-full border border-gray-100">
 

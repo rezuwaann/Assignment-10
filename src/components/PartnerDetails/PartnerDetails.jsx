@@ -22,18 +22,21 @@ const PartnerDetails = () => {
   // console.log(partner);
   const partnerstotal = partner?.partnerCount;
   const [currentPartner, setCurrentPartner] = useState(partnerstotal);
+console.log('partner ',partner?.partnerCount)
 
   //  console.log(user?.email)
   const handlePartnerRequest = async (e) => {
     e.preventDefault();
     const preferredSchedule = e.target.preferredSchedule.value;
     const goal = e.target.goal.value;
-
+    
     const res = await axios.get(
-      `http://localhost:3000/studyprofiles?email=${user?.email}`,
+      `http://localhost:3000/specificuser?email=${user?.email}`,
     );
-
+    
     const userInfo = res.data[0];
+    console.log('userdetailsfull',userInfo) //is is printing and partnerCount is inside it
+    console.log('user',userInfo?.partnerCount) //but it is showing undefined why
     // console.log(userInfo);
     // const connectedId = partner?._id;
     // console.log("connected ", connectedId);
@@ -48,6 +51,8 @@ const PartnerDetails = () => {
       connectedName: partner?.name,
       connectorEmail: userInfo?.email,
       connectedEmail: partner?.email,
+      connectorPartner:userInfo?.partnerCount,
+      connectedPartner:partner?.partnerCount,
       connectedAt: date,
       studyMode: userInfo?.studyMode,
       availabilityTime: userInfo?.availabilityTime,
