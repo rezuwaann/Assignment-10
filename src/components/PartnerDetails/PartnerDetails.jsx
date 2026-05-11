@@ -7,13 +7,28 @@ import Swal from "sweetalert2";
 const PartnerDetails = () => {
   const { user } = use(AuthContext);
   const [exists, setExists] = useState(false);
+
+  // const [formValue, setFormValue] = useState({});
+
+  // const handleFormValue = (e) => {
+  //   e.preventDefault();
+
+
+  //   setFormValue({
+     
+  //   });
+  // };
   const partner = useLoaderData();
   // console.log(partner);
   const partnerstotal = partner?.partnerCount;
   const [currentPartner, setCurrentPartner] = useState(partnerstotal);
 
   //  console.log(user?.email)
-  const handlePartnerRequest = async () => {
+  const handlePartnerRequest = async (e) => {
+    e.preventDefault();
+    const preferredSchedule = e.target.preferredSchedule.value;
+    const goal = e.target.goal.value;
+
     const res = await axios.get(
       `http://localhost:3000/specificuser?email=${user?.email}`,
     );
@@ -39,12 +54,20 @@ const PartnerDetails = () => {
       subject: userInfo?.subject,
       experienceLevel: userInfo?.experienceLevel,
       location: userInfo?.location,
+ goal: goal,
+      preferredSchedule: preferredSchedule,
+      status: "pending",
     };
+
+    // const connectionInfo = {
+    //   ...newConnection,
+    //   ...formValue,
+    // };
 
     // const res = await axios.get(`http://localhost:3000/connections`, {
     //   params: { connectorEmail: user?.email, connectedEmail: partner?.email },
     // });
-// console.log(newConnection)
+    // console.log(newConnection)
 
     console.log(res.data);
     const myConnections = userInfo.partnerCount;
@@ -61,6 +84,11 @@ const PartnerDetails = () => {
     await axios
       .post(`http://localhost:3000/connections`, newConnection)
       .then((res) => {
+
+  document.getElementById("my_modal_1").close();
+
+
+
         if (res.data.insertedId) {
           Swal.fire({
             position: "center",
@@ -84,6 +112,10 @@ const PartnerDetails = () => {
 
           setCurrentPartner(currentPartner + 1);
         } else {
+
+
+  document.getElementById("my_modal_1").close();
+
           console.log(res.data);
           Swal.fire({
             position: "center",
@@ -161,12 +193,61 @@ const PartnerDetails = () => {
       </div>
 
       {/* Button */}
-      <button
-        onClick={handlePartnerRequest}
+      {/* <button
+      
         className="w-full bg-black cursor-pointer text-white py-3 rounded-lg  font-medium"
       >
-        Send Partner Request
-      </button>
+       
+
+
+
+        
+      </button> */}
+
+      <form onSubmit={handlePartnerRequest} >
+        {/* Open the modal using document.getElementById('ID').showModal() method */}
+        <button
+          className="btn"
+          onClick={() => document.getElementById("my_modal_1").showModal()}
+        >
+          {" "}
+          Send Partner Request
+        </button>
+        <dialog id="my_modal_1" className="modal ">
+          <div className="bg-[#f5f5f5] p-5">
+            <p className="py-4">
+              Press ESC key or click the button below to close
+            </p>
+
+            <input
+              type="text"
+              name="preferredSchedule"
+              className="input bg-white"
+              placeholder="Preferred schedule"
+              required
+            />
+            <br />
+            <br />
+            <input
+              type="text"
+              name="goal"
+              className="input bg-white"
+              placeholder="Study Goal"
+              required
+            />
+            <br />
+
+            <div className="modal-action">
+              <div method="dialog" >
+                {/* if there is a button in div, it will close the modal */}
+                <button type="submit" className="btn">
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </form>
     </div>
   );
 };
