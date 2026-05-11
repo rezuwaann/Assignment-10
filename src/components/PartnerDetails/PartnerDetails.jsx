@@ -30,7 +30,7 @@ const PartnerDetails = () => {
     const goal = e.target.goal.value;
 
     const res = await axios.get(
-      `http://localhost:3000/specificuser?email=${user?.email}`,
+      `http://localhost:3000/studyprofiles?email=${user?.email}`,
     );
 
     const userInfo = res.data[0];
@@ -44,9 +44,9 @@ const PartnerDetails = () => {
     // console.log(date);
 
     const newConnection = {
-      connectorName: user?.displayName,
+      connectorName: userInfo?.name,
       connectedName: partner?.name,
-      connectorEmail: user?.email,
+      connectorEmail: userInfo?.email,
       connectedEmail: partner?.email,
       connectedAt: date,
       studyMode: userInfo?.studyMode,
@@ -59,6 +59,7 @@ const PartnerDetails = () => {
       status: "pending",
     };
 
+    console.log('user',user)
     // const connectionInfo = {
     //   ...newConnection,
     //   ...formValue,

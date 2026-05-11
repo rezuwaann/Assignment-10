@@ -1,12 +1,22 @@
-import React, { use } from "react";
+import React, { use, useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import { AuthContext } from "../../Context/AuthContext";
 import { Link } from "react-router";
+import axios from "axios";
 
 const Navbar = () => {
   const { user, signOutUser, setUser, loading } = use(AuthContext);
 
-  console.log(user);
+  const [userInfo,setUserInfo]=useState({})
+  
+  useEffect(()=>{
+    axios.get(`http://localhost:3000/specificuser?email=${user?.email}`)
+    .then(res=>{
+      setUserInfo(res.data[0])
+    })
+  
+  },[user])
+  console.log('userinfo',userInfo);
 
   const handleSignOut = () => {
     signOutUser().then((result) => {
@@ -137,7 +147,7 @@ const Navbar = () => {
             <div className="dropdown dropdown-left dropdown-end">
               <div tabIndex={0} role="" className=" m-1">
                 <img
-                  src={user?.photoURL}
+                  src={userInfo?.profileImage}
                   className="w-22 h-15 rounded-full border-gray-500 border-2"
                   alt=""
                 />

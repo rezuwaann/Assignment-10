@@ -8,7 +8,7 @@ const CreateAProfile = () => {
   const { user } = use(AuthContext);
   const [userInfo, setUserInfo] = useState({});
 
-  const { name, email, profileImage, partnerCount, rating } = userInfo;
+  const { name, email, profileImage, partnerCount, rating,location } = userInfo;
 
   console.log(userInfo.experienceLevel);
   const handleCreateUser = (e) => {
@@ -22,12 +22,12 @@ const CreateAProfile = () => {
     console.log(studymode, availability, subject, experience, location);
 
     const updatedData = {
-      profileId:userInfo?._id,
-      name:userInfo?.name,
-      profileImage:userInfo?.profileImage,
-      email:userInfo?.email,
-      rating:userInfo?.rating,
-      partnerCount:userInfo?.partnerCount,
+      profileId: userInfo?._id,
+      name: userInfo?.name,
+      profileImage: userInfo?.profileImage,
+      email: userInfo?.email,
+      rating: userInfo?.rating,
+      partnerCount: userInfo?.partnerCount,
       studyMode: studymode,
       availabilityTime: availability,
       subject: subject,
@@ -35,43 +35,43 @@ const CreateAProfile = () => {
       location: location,
     };
 
-    axios.post(
-      `http://localhost:3000/studyprofiles`,
-      updatedData,
-    )
-    .then(res=>{console.log(res)
-      if (res.data.insertedId) {
-         Swal.fire({
-      position: "center",
-      icon: "success",
-      title:  "Your profile has been created",
-      showConfirmButton: false,
-      timer: 1500,
-    })
-      }
-      else{
-         Swal.fire({
-      position: "center",
-      icon: "warning",
-      title:  "You already have a profile with this information",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-      }
-    })
-    .catch(error=>console.log(error))
+    axios
+      .post(`http://localhost:3000/studyprofiles`, updatedData)
+      .then((res) => {
+        console.log(res);
+        if (res.data.insertedId) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Your profile has been created",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "You already have a profile with this information",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((error) => console.log(error));
 
-  
-
-   
+axios
+      .patch(`http://localhost:3000/specificuser?email=${email}`, {
+        location:location,
+    
+      })
   };
 
   useEffect(() => {
-
-    axios.get(`http://localhost:3000/specificuser?email=${user?.email}`)
-    .then(res=>setUserInfo(res.data[0]))
-    .catch(error=>console.log(error))
-// console.log(userInfo)
+    axios
+      .get(`http://localhost:3000/specificuser?email=${user?.email}`)
+      .then((res) => setUserInfo(res.data[0]))
+      .catch((error) => console.log(error));
+    // console.log(userInfo)
 
     // fetch)
     //   .then((res) => res.json())
@@ -82,8 +82,8 @@ const CreateAProfile = () => {
 
   console.log(userInfo);
 
-  if(!userInfo){
-    return <span className="loading loading-bars loading-xl"></span>
+  if (!userInfo) {
+    return <span className="loading loading-bars loading-xl"></span>;
   }
 
   return (
@@ -98,14 +98,16 @@ const CreateAProfile = () => {
         </div>
 
         <div>
-            <h1 className="font-bold text-black lg:text-3xl mb-3">{name}</h1>
-            <div className="flex flex-col lg:flex-row gap-3">
-          <p className="text-white  font-semibold badge badge-neutral text-md p-3">Rating : {rating}</p>
+          <h1 className="font-bold text-black lg:text-3xl mb-3">{name}</h1>
+          <div className="flex flex-col lg:flex-row gap-3">
+            <p className="text-white  font-semibold badge badge-neutral text-md p-3">
+              Rating : {rating}
+            </p>
 
-          <p className="text-white  font-semibold  badge badge-neutral text-md p-5  lg:p-3">
-            Total Partner : {partnerCount}
-          </p>
-        </div>
+            <p className="text-white  font-semibold  badge badge-neutral text-md p-5  lg:p-3">
+              Total Partner : {partnerCount}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -113,19 +115,16 @@ const CreateAProfile = () => {
         onSubmit={handleCreateUser}
         className="text-black bg-white w-7/12 mt-5 mb-10 rounded-lg shadow-xl hover:shadow-2xl mx-auto p-7"
       >
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-black">
+            {userInfo.subject ? "Update Profile" : "Create Profile"}
+          </h2>
 
-         <div className="mb-8">
+          <p className="text-gray-500 mt-2">
+            Complete your study partner profile information
+          </p>
+        </div>
 
-            <h2 className="text-3xl font-bold text-black">
-              {userInfo.subject ? "Update Profile" : "Create Profile"}
-            </h2>
-
-            <p className="text-gray-500 mt-2">
-              Complete your study partner profile information
-            </p>
-
-          </div>
-          
         <div className="space-y-5">
           <div className="flex flex-col lg:flex-row justify-center gap-3 lg:gap-10 ">
             <div className="space-y-2 w-11/12 lg:w-1/2">
@@ -161,7 +160,7 @@ const CreateAProfile = () => {
               <br />
               <input
                 type="text"
-                defaultValue={userInfo.location || ""}
+                defaultValue={location || ""}
                 placeholder="Location"
                 className="input bg-white border-gray-500"
                 name="location"
@@ -227,7 +226,7 @@ const CreateAProfile = () => {
 
         <div className="flex justify-center">
           <button type="submit" className="btn mx-auto mt-5">
-             Create Profile
+            Create Profile
           </button>
         </div>
       </form>
