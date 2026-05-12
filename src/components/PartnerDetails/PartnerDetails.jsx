@@ -32,7 +32,7 @@ const PartnerDetails = () => {
   // console.log(partner);
   const partnerstotal = partner?.partnerCount;
   const [currentPartner, setCurrentPartner] = useState(partnerstotal);
-  console.log("partner ", partner?.partnerCount);
+  // console.log("partner ", partner?.partnerCount);
 
   //  console.log(user?.email)
   const handlePartnerRequest = async (e) => {
@@ -45,8 +45,8 @@ const PartnerDetails = () => {
     );
 
     const userInfo = res.data[0];
-    console.log("userdetailsfull", userInfo); //is is printing and partnerCount is inside it
-    console.log("user", userInfo?.partnerCount); //but it is showing undefined why
+    // console.log("userdetailsfull", userInfo); 
+    // console.log("user", userInfo?.partnerCount);
     // console.log(userInfo);
     // const connectedId = partner?._id;
     // console.log("connected ", connectedId);
@@ -64,38 +64,24 @@ const PartnerDetails = () => {
       connectorPartner: userInfo?.partnerCount,
       connectedPartner: partner?.partnerCount,
       connectedAt: date,
-      studyMode: userInfo?.studyMode,
-      availabilityTime: userInfo?.availabilityTime,
-      subject: userInfo?.subject,
-      experienceLevel: userInfo?.experienceLevel,
-      location: userInfo?.location,
+      studyMode: partner?.studyMode,
+      availabilityTime: partner?.availabilityTime,
+      subject: partner?.subject,
+      experienceLevel: partner?.experienceLevel,
+      connectedImage:partner?.profileImage,
+      location: partner?.location,
       goal: goal,
       preferredSchedule: preferredSchedule,
       status: "pending",
     };
 
-    console.log("user", user);
-    // const connectionInfo = {
-    //   ...newConnection,
-    //   ...formValue,
-    // };
-
-    // const res = await axios.get(`http://localhost:3000/connections`, {
-    //   params: { connectorEmail: user?.email, connectedEmail: partner?.email },
-    // });
-    // console.log(newConnection)
-
-    console.log(res.data);
+    // console.log("user", user);
+    
+    // console.log(res.data);
     const myConnections = userInfo.partnerCount;
     // console.log(myConnections);
     const partnerConnections = partner.partnerCount;
-    // console.log(partnerConnections);
-
-    //  axios.get(`http://localhost:3000/users/%{connectorId}`)
-    //   .then()
-
-    //   axios.patch(`http://localhost:3000/users/${connectedId}`)
-    // console.log(exists);
+    
 
     if (myStudyProfiles.length === 0) {
       document.getElementById("my_modal_1").close();
@@ -167,7 +153,7 @@ const PartnerDetails = () => {
   // console.log(partner);
 
   return (
-    <div className="my-10 w-11/12 lg:w-8/12 space-y-5 text-black mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col gap-5  md:h-170 h-130">
+    <div className="my-10 w-11/12 lg:w-8/12 space-y-5 text-black mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col gap-5  md:h-130 h-130">
       <ToastContainer></ToastContainer>
      <div className="flex items-center gap-4">
         <img
@@ -230,20 +216,10 @@ const PartnerDetails = () => {
         </div>
       </div>
 
-      {/* Button */}
-      {/* <button
-      
-        className="w-full bg-black cursor-pointer text-white py-3 rounded-lg  font-medium"
-      >
-       
-
-
-
-        
-      </button> */}
+    
 
       <form onSubmit={handlePartnerRequest}>
-        {/* Open the modal using document.getElementById('ID').showModal() method */}
+        
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_1").showModal()}
@@ -277,7 +253,7 @@ const PartnerDetails = () => {
 
             <div className="modal-action">
               <div method="dialog">
-                {/* if there is a button in div, it will close the modal */}
+                
                 <button type="submit" className="btn">
                   Done
                 </button>

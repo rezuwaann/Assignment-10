@@ -3,214 +3,136 @@ import { AuthContext } from "../Context/AuthContext";
 
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 const UpdateProfile = () => {
-  const { user } = use(AuthContext);
+  const { user ,loading} = use(AuthContext);
   const [userInfo, setUserInfo] = useState({});
 
-  const { name, email, profileImage, partnerCount, rating } = userInfo;
+  // console.log(userInfo.experienceLevel);
 
-  console.log(userInfo.experienceLevel);
   
-  const handleCreateUser = (e) => {
-    e.preventDefault();
-    const studymode = e.target.studymode.value;
-    const availability = e.target.availability.value;
-    const subject = e.target.subject.value;
-    const experience = e.target.experience.value;
-    const location = e.target.location.value;
-
-    console.log(studymode, availability, subject, experience, location);
-
-    const updatedData = {
-      studyMode: studymode,
-      availabilityTime: availability,
-      subject: subject,
-      experienceLevel: experience,
-      location: location,
-    };
-
-    axios.patch(
-      `http://localhost:3000/specificuser?email=${user?.email}`,
-      updatedData,
-    );
-
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: userInfo.subject
-        ? "Your profile has been updated"
-        : "Your profile has been created",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  };
 
   useEffect(() => {
-
-    axios.get(`http://localhost:3000/specificuser?email=${user?.email}`)
-    .then(res=>setUserInfo(res.data[0]))
-    .catch(error=>console.log(error))
-// console.log(userInfo)
-
-    // fetch)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setUserInfo(data[0]);
-    //   });
+    axios
+      .get(`http://localhost:3000/specificuser?email=${user?.email}`)
+      .then((res) => setUserInfo(res.data[0]))
+      .catch((error) => console.log(error));
   }, [user]);
 
-  console.log(userInfo);
+  const { name, email, profileImage, partnerCount, rating } = userInfo || {};
 
-  if(!userInfo){
-    return <span className="loading loading-bars loading-xl"></span>
+ 
+    if (!user) {
+    return (
+      <div className="h-screen flex justify-center items-center text-black rounded-lg p-6">
+        <div className="flex bg-white justify-center h-1/2 w-8/12 mx-auto items-center flex-col rounded-xl shadow-lg">
+          <h1 className="text-4xl font-bold">You are not logged in</h1>
+
+          <p className="mt-3 text-lg text-gray-600">
+            Please login or create an account to continue
+          </p>
+
+          <div className="flex gap-4 mt-8">
+            <Link
+              to="/login"
+              className="px-6 py-3 bg-black text-white rounded-lg font-semibold"
+            >
+              Login
+            </Link>
+
+            <Link
+              to="/register"
+              className="px-6 py-3 border-2 border-black rounded-lg bg-black font-semibold text-white"
+            >
+              Register
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
+  if (loading) {
+   return <div className="flex justify-center items-center min-h-screen text-black">
+    <span className="loading loading-bars loading-xl"></span>
+   </div>
   }
 
   return (
     <div>
-      <div className="gap-5 p-7 shadow-xl flex items-center hover:shadow-2xl my-5 bg-white w-7/12 mx-auto">
-        <div>
-          <img
-            className="mx-5 h-20 w-20 lg:w-25  lg:h-25 outline-2 rounded-full border-gray-600 border-2"
-            src={profileImage}
-            alt=""
-          />
-        </div>
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
+        <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-white text-black flex flex-col items-center justify-center py-12 px-6">
+            <img
+              src={profileImage}
+              alt=""
+              className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
+            />
 
-        <div>
-            <h1 className="font-bold text-black lg:text-3xl mb-3">{name}</h1>
-            <div className="flex flex-col lg:flex-row gap-3">
-          <p className="text-white  font-semibold badge badge-neutral text-md p-3">Rating : {rating}</p>
+            <h1 className="text-4xl font-bold mt-5">{name}</h1>
 
-          <p className="text-white  font-semibold  badge badge-neutral text-md p-5  lg:p-3">
-            Total Partner : {partnerCount}
-          </p>
-        </div>
+            <p className="text-black mt-2 text-lg">{email}</p>
+
+            <div className="flex gap-5 mt-6 flex-wrap justify-center">
+              <div className="bg-black text-white px-6 py-3 rounded-xl shadow-md text-center">
+                <h2 className="text-2xl font-bold">{rating}</h2>
+                <p className="text-sm font-medium">Rating</p>
+              </div>
+
+              <div className="bg-black text-white px-6 py-3 rounded-xl shadow-md text-center">
+                <h2 className="text-2xl font-bold">{partnerCount}</h2>
+                <p className="text-sm font-medium">Partners</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="font-semibold text-gray-700">Name</label>
+              <input
+                type="text"
+                value={name}
+                readOnly
+                className="input w-full mt-2 bg-white border border-gray-400 text-black"
+              />
+            </div>
+
+            <div>
+              <label className="font-semibold text-gray-700">Email</label>
+              <input
+                type="text"
+                value={email}
+                readOnly
+                className="input w-full mt-2 bg-white border border-gray-400 text-black"
+              />
+            </div>
+
+            <div>
+              <label className="font-semibold text-gray-700">Rating</label>
+              <input
+                type="text"
+                value={rating}
+                readOnly
+                className="input w-full mt-2 bg-white border border-gray-400 text-black"
+              />
+            </div>
+
+            <div>
+              <label className="font-semibold text-gray-700">
+                Total Partners
+              </label>
+              <input
+                type="text"
+                value={partnerCount}
+                readOnly
+                className="input w-full mt-2 bg-white border border-gray-400 text-black"
+              />
+            </div>
+          </div>
         </div>
       </div>
-
-      <form
-        onSubmit={handleCreateUser}
-        className="text-black bg-white w-7/12 mt-5 mb-10 rounded-lg shadow-xl hover:shadow-2xl mx-auto p-7"
-      >
-
-         <div className="mb-8">
-
-            <h2 className="text-3xl font-bold text-black">
-              {userInfo.subject ? "Update Profile" : "Create Profile"}
-            </h2>
-
-            <p className="text-gray-500 mt-2">
-              Complete your study partner profile information
-            </p>
-
-          </div>
-          
-        <div className="space-y-5">
-          <div className="flex flex-col lg:flex-row justify-center gap-3 lg:gap-10 ">
-            <div className="space-y-2 w-11/12 lg:w-1/2">
-              <label className="label">Name</label>
-              <br />
-              <input
-                type="text"
-                readOnly
-                value={name}
-                className="input bg-white border-gray-500"
-                name="name"
-              />
-            </div>
-
-            <div className="space-y-2 w-11/12 lg:w-1/2">
-              <label className="label">Email</label>
-              <br />
-              <input
-                type="text"
-                readOnly
-                value={email}
-                className="input bg-white border-gray-500"
-                name="email"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col lg:flex-row justify-center gap-3 lg:gap-10 ">
-            <div className="space-y-2 w-11/12 lg:w-1/2">
-              <label htmlFor="" className="label">
-                Location
-              </label>
-              <br />
-              <input
-                type="text"
-                defaultValue={userInfo.location || ""}
-                placeholder="Location"
-                className="input bg-white border-gray-500"
-                name="location"
-                required
-              />
-            </div>
-
-            <div className="space-y-2 w-11/12 lg:w-1/2">
-              <label className="label">Availability</label>
-              <br />
-              <input
-                type="text"
-                defaultValue={userInfo.availabilityTime || ""}
-                placeholder="Availability"
-                className="input bg-white border-gray-500"
-                name="availability"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col lg:flex-row justify-center gap-3 lg:gap-10 ">
-            <div className="space-y-2 w-11/12 lg:w-1/2">
-              <select
-                defaultValue="Subject"
-                className="select bg-white border-black"
-                name="subject"
-              >
-                <option disabled={true}>Subject</option>
-                <option>English</option>
-                <option>Math</option>
-                <option>Programming</option>
-              </select>
-            </div>
-
-            <div className="space-y-2 w-11/12 lg:w-1/2 ">
-              <select
-                defaultValue="Study Mode"
-                className="select bg-white border-black"
-                name="studymode"
-                required
-              >
-                <option disabled={true}>Study Mode</option>
-                <option>Online</option>
-                <option>Offline</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="space-y-2 w-11/12 lg:w-1/2">
-            <select
-              defaultValue="Experience Level"
-              className="select bg-white border-black"
-              name="experience"
-            >
-              <option disabled={true}>Experience Level</option>
-              <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Expert</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="flex justify-center">
-          <button type="submit" className="btn mx-auto mt-5">
-            {userInfo.subject ? "Update " : "Create "} Profile
-          </button>
-        </div>
-      </form>
     </div>
   );
 };

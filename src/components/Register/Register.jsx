@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router";
 
+import { toast, ToastContainer } from "react-toastify";
+
 const Register = () => {
   const { signInWithGoogle, createUser } = use(AuthContext);
   const [err, setError] = useState(" ");
@@ -51,7 +53,7 @@ const Register = () => {
           .then((data) => {
             console.log("after saving", data);
           })
-          .then((error) => {
+          .catch((error) => {
             console.log(error);
           });
 
@@ -68,28 +70,16 @@ const Register = () => {
       .catch((error) => {
         console.log(error);
 
-         Swal.fire({
-          position: "center",
-          icon: "warning",
-          title: "An account already exists with this email",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+      
+          toast.warning("an account with this email already exists");
+    
       });
   };
 
-  const handleGoogleSignIn = () => {
-    signInWithGoogle()
+  const handleGoogleSignIn = async () => {
+    await signInWithGoogle()
       .then((result) => {
         console.log(result);
-
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Your account has been created",
-          showConfirmButton: false,
-          timer: 1500,
-        });
 
         const newUser = {
           name: result.user.displayName,
@@ -104,6 +94,7 @@ const Register = () => {
           .post("http://localhost:3000/users", newUser)
           .then((data) => {
             console.log("after saving", data);
+            toast.success("login successful");
           })
           .then((error) => {
             console.log(error);
@@ -115,6 +106,7 @@ const Register = () => {
   };
   return (
     <div>
+      <ToastContainer></ToastContainer>
       <form onSubmit={handleRegister}>
         <fieldset className="fieldset text-black bg-white rounded-box w-sm shadow-xl p-4 my-10 mx-auto space-y-3 ">
           <label className="label">Name</label>

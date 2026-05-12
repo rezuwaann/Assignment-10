@@ -12,7 +12,7 @@ const CreateAProfile = () => {
   const { name, email, profileImage, partnerCount, rating, location } =
     userInfo;
 
-  console.log(userInfo.experienceLevel);
+  // console.log(userInfo.experienceLevel);
   const handleCreateUser = (e) => {
     e.preventDefault();
     const studymode = e.target.studymode.value;
@@ -21,7 +21,18 @@ const CreateAProfile = () => {
     const experience = e.target.experience.value;
     const location = e.target.location.value;
 
-    console.log(studymode, availability, subject, experience, location);
+    // console.log(studymode, availability, subject, experience, location);
+
+    if (subject==='Subject') {
+      toast.error("Choose Subject");
+          return;
+    }else if (studymode==='Study Mode') {
+      toast.error("Choose Study mode");
+          return;
+    }else if (experience==='Experience Level') {
+      toast.error("Choose experience");
+          return;
+    }
 
     const updatedData = {
       profileId: userInfo?._id,
@@ -40,7 +51,7 @@ const CreateAProfile = () => {
     axios
       .post(`http://localhost:3000/studyprofiles`, updatedData)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         if (res.data.insertedId) {
           toast.success("Profile created", {
             position: "bottom-right",
@@ -72,6 +83,7 @@ const CreateAProfile = () => {
 
     axios.patch(`http://localhost:3000/specificuser?email=${email}`, {
       location: location,
+      availabilityTime: availability,
     });
   };
 
@@ -89,7 +101,7 @@ const CreateAProfile = () => {
     //   });
   }, [user]);
 
-  console.log(userInfo);
+  // console.log(userInfo);
 
   if (!userInfo) {
     return <span className="loading loading-bars loading-xl"></span>;
@@ -143,7 +155,7 @@ const CreateAProfile = () => {
               <input
                 type="text"
                 readOnly
-                value={name}
+                value={name|| ''}
                 className="input bg-white border-gray-500"
                 name="name"
               />
@@ -155,7 +167,7 @@ const CreateAProfile = () => {
               <input
                 type="text"
                 readOnly
-                value={email}
+                value={email|| ''}
                 className="input bg-white border-gray-500"
                 name="email"
               />

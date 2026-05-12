@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 
@@ -17,26 +17,46 @@ const ConnectedCard = ({ connection, deleteCard }) => {
     preferredSchedule,
     goal,
     status,
+    connectedImage,
   } = connection;
 
+  //   console.log(connection);
+
+  const [connectorInfo, setConnectorInfo] = useState({});
+
+  useEffect(() => {
+  const fetchConnector = async () => {
+    try {
+      const connector = await axios.get(
+        `http://localhost:3000/specificuser?email=${connectorEmail}`,
+      );
+      const info = connector?.data;
+      setConnectorInfo(info[0]);
+    } catch (error) {
+      console.error("Failed to fetch connector:", error);
+    }
+  };
+
+  fetchConnector();
+}, [connectorEmail]);
+
+
+//   console.log(connectorInfo);
+
   const handleDelete = async () => {
-
-
-     toast.success("Deleted", {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                    transition: Bounce,
-                  });
-
+    toast.success("Deleted", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+    });
 
     await deleteCard(_id);
-
 
     const connector = await axios.get(
       `http://localhost:3000/specificuser?email=${connectorEmail}`,
@@ -47,7 +67,7 @@ const ConnectedCard = ({ connection, deleteCard }) => {
     );
     const connectedInfo = connected.data;
 
-    console.log(connectorInfo[0]?.partnerCount, connectedInfo[0]?.partnerCount);
+    // console.log(connectorInfo[0]?.partnerCount, connectedInfo[0]?.partnerCount);
 
     await axios.patch(
       `http://localhost:3000/specificuser?email=${connectorEmail}`,
@@ -57,15 +77,13 @@ const ConnectedCard = ({ connection, deleteCard }) => {
       `http://localhost:3000/specificuser?email=${connectedEmail}`,
       { partnerCount: connectedInfo[0]?.partnerCount - 1 },
     );
-
-    
   };
 
   const [currentSchedule, setPreferredSchedule] = useState(preferredSchedule);
   const [currentGoal, setGoal] = useState(goal);
   const [currentStatus, setStatus] = useState(status);
 
-  console.log(connection);
+  //   console.log(connection);
 
   //   const [updatedInfo,setUpdatedInfo]=useState({})
 
@@ -75,17 +93,17 @@ const ConnectedCard = ({ connection, deleteCard }) => {
     const newGoal = e.target.goal.value;
     const status = e.target.status.value;
 
-       if (status === "Status") {
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Please select a status",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          document.getElementById(`my_modal_${_id}`).close();
-          return;
-        }
+    if (status === "Status") {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Please select a status",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      document.getElementById(`my_modal_${_id}`).close();
+      return;
+    }
 
     const updatedInfo = {
       preferredSchedule: newPreferredSchedule,
@@ -105,21 +123,20 @@ const ConnectedCard = ({ connection, deleteCard }) => {
         setGoal(updatedInfo.goal);
         setStatus(updatedInfo.status);
 
-     
         if (res.data.modifiedCount) {
-            toast.success("Updated", {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                    transition: Bounce,
-                  });
-          console.log(updatedInfo);
-          console.log(res.data);
+          toast.success("Updated", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+        //   console.log(updatedInfo);
+        //   console.log(res.data);
           document.getElementById(`my_modal_${_id}`).close();
         } else {
           Swal.fire({
@@ -129,65 +146,85 @@ const ConnectedCard = ({ connection, deleteCard }) => {
             showConfirmButton: false,
             timer: 1500,
           });
-          console.log("sorry", res.data);
-          console.log(updatedInfo);
+        //   console.log("sorry", res.data);
+        //   console.log(updatedInfo);
           document.getElementById(`my_modal_${_id}`).close();
         }
       });
   };
 
   return (
-    <div className="bg-white  h-80 border border-gray-200 rounded-lg  shadow-xl hover:shadow-2xl flex flex-col items-center justify-between text-black">
+    <div className="bg-white  min-h-100 border  border-gray-200 rounded-lg  shadow-xl hover:shadow-2xl flex flex-col items-center justify-between text-black">
       <ToastContainer></ToastContainer>
+
       <div className="flex-1 my-3 p-5">
         <div className="mb-2 flex justify-between">
-          <div>
-            <p className="text-lg font-semibold">{connectedName}</p>
-            <p className="text-md text-gray-500">{connectedEmail}</p>
+          <div className="flex flex-col  gap-3">
+            <div>
+              <img
+                src={connectedImage}
+                className="w-22 h-22 object-cover rounded-full"
+                alt=""
+              />
+            </div>
+            <div>
+              <p className="text-2xl font-semibold">{connectedName}</p>
+              <p className="text-lg text-gray-500">{connectedEmail}</p>
+            </div>
           </div>
 
           <div>
-            <p className="rounded-lg bg-red-500 text-white p-2">
+            <p className="rounded-lg text-lg  bg-red-500 text-white p-2">
               {currentStatus}
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 gap-y-2 text-md">
+        <div className="grid grid-cols-2 gap-6 gap-y-4 text-md">
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Subject</span>
-            <span className="font-medium text-gray-800">{subject}</span>
+            <span className="text-gray-400 text-lg">Subject</span>
+            <span className="font-medium text-gray-800 text-lg">{subject}</span>
           </div>
 
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Study Mode</span>
-            <span className="font-medium text-gray-800">{studyMode}</span>
+            <span className="text-gray-400 text-lg">Study Mode</span>
+            <span className="font-medium text-gray-800 text-lg">
+              {studyMode}
+            </span>
           </div>
 
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Availability</span>
-            <span className="font-medium text-gray-800">
+            <span className="text-gray-400 text-lg">Availability</span>
+            <span className="font-medium text-gray-800 text-lg">
               {availabilityTime}
             </span>
           </div>
 
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Location</span>
-            <span className="font-medium text-gray-800">{location}</span>
+            <span className="text-gray-400 text-lg">Location</span>
+            <span className="font-medium text-gray-800 text-lg">
+              {location}
+            </span>
           </div>
 
           <div className="flex justify-between gap-4 col-span-1">
-            <span className="text-gray-400">Connected At</span>
-            <span className="font-medium text-gray-800">{connectedAt}</span>
+            <span className="text-gray-400 text-lg">Connected At</span>
+            <span className="font-medium text-gray-800 text-lg">
+              {connectedAt}
+            </span>
           </div>
 
           <div className="flex justify-between gap-4 col-span-1">
-            <span className="text-gray-400">Preffered Schedule</span>
-            <span className="font-medium text-gray-800">{currentSchedule}</span>
+            <span className="text-gray-400 text-lg">Preffered Schedule</span>
+            <span className="font-medium text-gray-800 text-lg">
+              {currentSchedule}
+            </span>
           </div>
           <div className="flex justify-between gap-4 col-span-1">
-            <span className="text-gray-400">Target Goal</span>
-            <span className="font-medium text-gray-800">{currentGoal}</span>
+            <span className="text-gray-400 text-lg">Target Goal</span>
+            <span className="font-medium text-gray-800 text-lg">
+              {currentGoal}
+            </span>
           </div>
         </div>
       </div>
@@ -210,8 +247,11 @@ const ConnectedCard = ({ connection, deleteCard }) => {
                 <p className="py-4">
                   Update the information Here and press ESC to close
                 </p>
-<label htmlFor="" className="label">Preffered Location</label>
-<br /><br />
+                <label htmlFor="" className="label">
+                  Preffered Location
+                </label>
+                <br />
+                <br />
                 <input
                   type="text"
                   name="preferredSchedule"
@@ -222,8 +262,11 @@ const ConnectedCard = ({ connection, deleteCard }) => {
                 />
                 <br />
                 <br />
-                <label htmlFor="" className="label">Goal</label>
-<br /><br />
+                <label htmlFor="" className="label">
+                  Goal
+                </label>
+                <br />
+                <br />
                 <input
                   type="text"
                   name="goal"

@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import axios from "axios";
 
 const Navbar = () => {
-  const { user, signOutUser, setUser, loading } = use(AuthContext);
+  const { user, signOutUser, setUser } = use(AuthContext);
 
   const [userInfo,setUserInfo]=useState({})
   
@@ -16,7 +16,7 @@ const Navbar = () => {
     })
   
   },[user])
-  console.log('userinfo',userInfo);
+  // console.log('userinfo',userInfo);
 
   const handleSignOut = () => {
     signOutUser().then((result) => {
@@ -63,52 +63,7 @@ const Navbar = () => {
     </>
   );
 
-  if (loading) {
-    return (
-      <div>
-        <div className="navbar  shadow-sm">
-          <div className="navbar-start">
-            <div className="dropdown">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost lg:hidden text-black"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="black"
-                >
-                  {" "}
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h8m-8 6h16"
-                  />{" "}
-                </svg>
-              </div>
-              <ul
-                tabIndex="-1"
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-              >
-                {links}
-              </ul>
-            </div>
-            <img src={logo} alt="" className="h-22 w-35" />
-          </div>
-          <div className="navbar-end hidden lg:flex">
-            <ul className="menu menu-horizontal px-1 gap-2">
-              <span className="loading loading-dots loading-xl text-black"></span>
-            </ul>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+ 
   return (
     <div>
       <div className="navbar  shadow-sm">
@@ -147,11 +102,11 @@ const Navbar = () => {
 
         {/* {user ? ( */}
           <div className={user?'':'hidden'}>
-            <div className="dropdown dropdown-left dropdown-end">
+            <div className="dropdown dropdown-down dropdown-end">
               <div tabIndex={0} role="" className=" m-1">
                 <img
                   src={userInfo?.profileImage}
-                  className="w-25 h-15 rounded-full border-gray-500 border-2"
+                  className="w-10 h-10 lg:w-12 xl:w-18 lg:h-12 rounded-full border-gray-500 border-2"
                   alt=""
                 />
               </div>

@@ -13,7 +13,7 @@ const Banner = () => {
       .catch((error) => console.log(error));
   }, []);
   
-  console.log(userInfo);
+  // console.log(userInfo);
 
   return (
     <div>

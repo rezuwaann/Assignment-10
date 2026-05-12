@@ -12,17 +12,17 @@ const Connections = () => {
 
   const handleDelete = (id) => {
 
-      toast.success("Deleted", {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: false,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                        transition: Bounce,
-                      });
+    //   toast.success("Deleted", {
+    //                     position: "bottom-right",
+    //                     autoClose: 5000,
+    //                     hideProgressBar: false,
+    //                     closeOnClick: false,
+    //                     pauseOnHover: true,
+    //                     draggable: true,
+    //                     progress: undefined,
+    //                     theme: "colored",
+    //                     transition: Bounce,
+    //                   });
 
 
     axios
@@ -57,8 +57,8 @@ const Connections = () => {
     );
   }
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 my-10 mx-auto w-11/12">
-      <ToastContainer></ToastContainer> 
+    <div className="grid md:grid-cols-2  gap-10 my-10 mx-auto w-11/12">
+     
       {connections.map((connection, index) => (
         <ConnectedCard
           key={index + 1}
