@@ -26,7 +26,12 @@ const AuthProvider = ({ children }) => {
 
   const createUser = (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
+    return createUserWithEmailAndPassword(auth, email, password).catch(
+      (error) => {
+        console.log(error)
+        setLoading(false);
+      },
+    );
   };
 
   const signInUser = (email, password) => {
@@ -53,9 +58,9 @@ const AuthProvider = ({ children }) => {
     signInUser,
     loading,
     user,
-    setUser
+    setUser,
   };
-  console.log(user)
+  console.log(user);
   return <AuthContext value={authInfo}>{children}</AuthContext>;
 };
 

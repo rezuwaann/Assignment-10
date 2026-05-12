@@ -7,7 +7,8 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
-  const { signInWithGoogle, createUser } = use(AuthContext);
+  const { signInWithGoogle, createUser, setLoading, loading } =
+    use(AuthContext);
   const [err, setError] = useState(" ");
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,7 +16,7 @@ const Register = () => {
 
   console.log(location, form);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     const name = e.target.name.value;
@@ -44,43 +45,34 @@ const Register = () => {
       setError("");
     }
 
-    createUser(email, password)
-      .then((result) => {
-        console.log(result);
+    try {
+      await createUser(email, password);
 
-        axios
-          .post("http://localhost:3000/users", newUser)
-          .then((data) => {
-            console.log("after saving", data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      await axios.post("http://localhost:3000/users", newUser);
 
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Your account has been created",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-
-        navigate(form);
-      })
-      .catch((error) => {
-        console.log(error);
-
-      
-          toast.warning("an account with this email already exists");
-    
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Your account has been created",
+        showConfirmButton: false,
+        timer: 1500,
       });
+
+      navigate(form);
+    } catch (error) {
+      console.log(error);
+
+      toast.warning("an account with this email already exists");
+      // setLoading(false)
+      // console.log(loading)
+    }
   };
 
   const handleGoogleSignIn = async () => {
     await signInWithGoogle()
       .then((result) => {
         console.log(result);
-
+        toast.success("login successful");
         const newUser = {
           name: result.user.displayName,
           email: result.user.email,
@@ -94,11 +86,14 @@ const Register = () => {
           .post("http://localhost:3000/users", newUser)
           .then((data) => {
             console.log("after saving", data);
-            toast.success("login successful");
           })
           .then((error) => {
             console.log(error);
           });
+
+        setTimeout(() => {
+          navigate(form);
+        }, 1000);
       })
       .catch((error) => {
         console.log(error);
