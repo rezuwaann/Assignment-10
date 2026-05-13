@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const ConnectedCard = ({ connection, deleteCard }) => {
   const {
@@ -23,12 +24,13 @@ const ConnectedCard = ({ connection, deleteCard }) => {
   //   console.log(connection);
 
   const [connectorInfo, setConnectorInfo] = useState({});
+  const axiosSecure=useAxiosSecure()
 
   useEffect(() => {
   const fetchConnector = async () => {
     try {
-      const connector = await axios.get(
-        `http://localhost:3000/specificuser?email=${connectorEmail}`,
+      const connector = await axiosSecure.get(
+        `/specificuser?email=${connectorEmail}`,
       );
       const info = connector?.data;
       setConnectorInfo(info[0]);
@@ -38,7 +40,7 @@ const ConnectedCard = ({ connection, deleteCard }) => {
   };
 
   fetchConnector();
-}, [connectorEmail]);
+}, [connectorEmail,axiosSecure]);
 
 
 //   console.log(connectorInfo);
@@ -58,23 +60,23 @@ const ConnectedCard = ({ connection, deleteCard }) => {
 
     await deleteCard(_id);
 
-    const connector = await axios.get(
-      `http://localhost:3000/specificuser?email=${connectorEmail}`,
+    const connector = await axiosSecure.get(
+      `/specificuser?email=${connectorEmail}`,
     );
     const connectorInfo = connector.data;
-    const connected = await axios.get(
-      `http://localhost:3000/specificuser?email=${connectedEmail}`,
+    const connected = await axiosSecure.get(
+      `/specificuser?email=${connectedEmail}`,
     );
     const connectedInfo = connected.data;
 
     // console.log(connectorInfo[0]?.partnerCount, connectedInfo[0]?.partnerCount);
 
-    await axios.patch(
-      `http://localhost:3000/specificuser?email=${connectorEmail}`,
+    await axiosSecure.patch(
+      `/specificuser?email=${connectorEmail}`,
       { partnerCount: connectorInfo[0]?.partnerCount - 1 },
     );
-    await axios.patch(
-      `http://localhost:3000/specificuser?email=${connectedEmail}`,
+    await axiosSecure.patch(
+      `/specificuser?email=${connectedEmail}`,
       { partnerCount: connectedInfo[0]?.partnerCount - 1 },
     );
   };
@@ -116,8 +118,8 @@ const ConnectedCard = ({ connection, deleteCard }) => {
     // const preferredSchedule = e.target.preferredSchedule.value;
     // const goal = e.target.goal.value;
 
-    await axios
-      .patch(`http://localhost:3000/connections?id=${_id}`, updatedInfo)
+    await axiosSecure
+      .patch(`/connections?id=${_id}`, updatedInfo)
       .then((res) => {
         setPreferredSchedule(updatedInfo.preferredSchedule);
         setGoal(updatedInfo.goal);

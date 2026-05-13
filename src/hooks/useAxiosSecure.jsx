@@ -1,49 +1,47 @@
 import axios from "axios";
-import useAuth from "./useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import useAuth from "./useAuth";
 
 const instance = axios.create({
-  baseURL: `http://localhost:3000`,
+  baseURL: `https://studymate-server-sigma.vercel.app`,
+  withCredentials:true
 });
 
 const useAxiosSecure = () => {
-  // set token in the header for all api using useAxiosSecure
-
-  const { user, signOutUser } = useAuth();
+  const { signOutUser } = useAuth();
   const navigate = useNavigate();
+// const token = req.cookies.token;
   useEffect(() => {
-    // request interceptor
     const requestInterceptor = instance.interceptors.request.use((config) => {
-      console.log(config);
-
-      const token = user?.accessToken;
-      if (token) {
-        config.headers.authorization = `Bearer ${user.accessToken}`;
-      }
+      // ✅ Read the JWT your server issued, stored during login
+      // const token = localStorage.getItem("token");
+      // if (token) {
+      //   config.headers.authorization = `Bearer ${token}`;
+      // }
       return config;
     });
 
-    // response interceptor
     const responseInterceptor = instance.interceptors.response.use(
-      (res) => {
-        return res;
-      },
+      (res) => res,
       (err) => {
-        const status = err.status;
+        const status = err?.response?.status; // ✅ err.response.status, not err.status
         console.log("error inside the interceptor", err);
-        if (status == 401 || status == 403) {
+        if (status === 401 || status === 403) {
           signOutUser().then(() => {
             navigate("/register");
           });
         }
-      },
+        return Promise.reject(err); // ✅ Always re-reject so .catch() works downstream
+      }
     );
+
     return () => {
       instance.interceptors.request.eject(requestInterceptor);
-      instance.interceptors.request.eject(responseInterceptor);
+      instance.interceptors.response.eject(responseInterceptor); // ✅ was ejecting from .request twice
     };
-  }, [user, navigate, signOutUser]);
+  }, [signOutUser, navigate]);
+
   return instance;
 };
 

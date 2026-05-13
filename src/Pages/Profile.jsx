@@ -1,24 +1,26 @@
 import React, { use, useEffect, useState } from "react";
 import { AuthContext } from "../Context/AuthContext";
 
-import axios from "axios";
+// import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router";
+
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const UpdateProfile = () => {
   const { user ,loading} = use(AuthContext);
   const [userInfo, setUserInfo] = useState({});
-
+const axiosSecure=useAxiosSecure()
   // console.log(userInfo.experienceLevel);
 
   
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/specificuser?email=${user?.email}`)
+    axiosSecure
+      .get(`https://studymate-server-sigma.vercel.app/specificuser?email=${user?.email}`)
       .then((res) => setUserInfo(res.data[0]))
       .catch((error) => console.log(error));
-  }, [user]);
+  }, [user,axiosSecure]);
 
   const { name, email, profileImage, partnerCount, rating } = userInfo || {};
 

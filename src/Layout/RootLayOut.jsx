@@ -8,13 +8,11 @@ import { AuthContext } from "../Context/AuthContext";
 const RootLayOut = () => {
   const { loading } = use(AuthContext);
   if (loading) {
-    setTimeout(() => {
-      return (
-        <div className="flex justify-center items-center min-h-screen text-black">
-          <span className="loading loading-bars loading-xl"></span>
-        </div>
-      );
-    }, 1500);
+    return (
+      <div className="flex justify-center items-center min-h-screen text-black">
+        <span className="loading loading-bars loading-xl"></span>
+      </div>
+    );
   }
 
   return (

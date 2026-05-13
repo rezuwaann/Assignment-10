@@ -3,19 +3,23 @@ import logo from "../../assets/logo.png";
 import { AuthContext } from "../../Context/AuthContext";
 import { Link } from "react-router";
 import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Navbar = () => {
   const { user, signOutUser, setUser } = use(AuthContext);
 
   const [userInfo,setUserInfo]=useState({})
+  const axiosSecure=useAxiosSecure();
   
-  useEffect(()=>{
-    axios.get(`http://localhost:3000/specificuser?email=${user?.email}`)
+ if (user) {
+   useEffect(()=>{
+    axiosSecure.get(`https://studymate-server-sigma.vercel.app/specificuser?email=${user?.email}`)
     .then(res=>{
       setUserInfo(res.data[0])
     })
   
-  },[user])
+  },[user,axiosSecure])
+ }
   // console.log('userinfo',userInfo);
 
   const handleSignOut = () => {
@@ -100,13 +104,13 @@ const Navbar = () => {
         </div>
 
 
-        {/* {user ? ( */}
-          <div className={user?'':'hidden'}>
+   
+          <div className={user?'navbar-end':'hidden' }>
             <div className="dropdown dropdown-down dropdown-end">
               <div tabIndex={0} role="" className=" m-1">
                 <img
                   src={userInfo?.profileImage}
-                  className="w-10 h-10 lg:w-12 xl:w-18 lg:h-12 rounded-full border-gray-500 border-2"
+                  className="w-10 h-10 lg:w-12 xl:w-14 lg:h-12 rounded-full border-gray-500 border-2"
                   alt=""
                 />
               </div>

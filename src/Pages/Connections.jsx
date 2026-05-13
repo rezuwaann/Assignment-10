@@ -5,28 +5,19 @@ import { AuthContext } from "../Context/AuthContext";
 import Swal from "sweetalert2";
 import { Link } from "react-router";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const Connections = () => {
   const { user } = use(AuthContext);
   const [connections, setConnections] = useState([]);
-
+const axiosSecure=useAxiosSecure()
   const handleDelete = (id) => {
 
-    //   toast.success("Deleted", {
-    //                     position: "bottom-right",
-    //                     autoClose: 5000,
-    //                     hideProgressBar: false,
-    //                     closeOnClick: false,
-    //                     pauseOnHover: true,
-    //                     draggable: true,
-    //                     progress: undefined,
-    //                     theme: "colored",
-    //                     transition: Bounce,
-    //                   });
+ 
 
 
-    axios
-      .delete(`http://localhost:3000/connections?id=${id}`)
+    axiosSecure
+      .delete(`/connections?id=${id}`)
       .then(() => {
         setConnections(
           connections.filter((connection) => connection._id !== id),
@@ -37,8 +28,8 @@ const Connections = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/connections?email=${user?.email}`)
+    axiosSecure
+      .get(`/connections?email=${user?.email}`)
       .then((res) => setConnections(res.data))
       .catch((err) => console.log(err));
   }, [user]);
@@ -46,11 +37,11 @@ const Connections = () => {
 
   if (connections.length === 0) {
     return (
-      <div className=" h-screen flex justify-center items-center  text-black rounded-lg p-6 text-center">
-        <div className="flex bg-white justify-center h-1/2 w-8/12 mx-auto items-center flex-col">
-          <h1 className="text-3xl font-bold">You don't have any connections</h1>
-          <p className="mt-2 text-lg">
-            Please <Link className="underline" to={'/createaprofile'}>create a profile</Link> and make connections
+      <div className="h-[50vh] md:h-screen flex justify-center items-center text-black rounded-lg p-10 md:p-6 text-center">
+        <div className="flex bg-white justify-center shadow-xl hover:shadow-2xl h-1/2 w-11/12 md:w-8/12 mx-auto items-center flex-col">
+          <h1 className="text-2xl md:text-3xl font-bold">You don't have any connections</h1>
+          <p className="mt-2  md:text-lg">
+            Please <Link className="underline" to={'/createaprofile'}>create a profile (if you don't have one)</Link> and make connections
           </p>
         </div>
       </div>

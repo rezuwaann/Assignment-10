@@ -110,7 +110,7 @@ const Login = () => {
               ></path>
             </g>
           </svg>
-          Login with Google
+          Continue with Google
         </button>
       </div>
     </div>

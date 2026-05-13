@@ -16,6 +16,7 @@ import PartnerDetails from "./components/PartnerDetails/PartnerDetails.jsx";
 import CreateAProfile from "./components/CreateAProfile/CreateAProfile.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Connections from "./Pages/Connections.jsx";
+import Error from "./components/Error/Error.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
       {
         path: `/partner/:id`,
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/users/${params.id}`),
+          fetch(`https://studymate-server-sigma.vercel.app/users/${params.id}`),
         element: (
           <PrivateRoute>
             <PartnerDetails></PartnerDetails>
@@ -49,11 +50,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: (
-        
-            <Profile></Profile>
-          
-        ),
+        element: <PrivateRoute><Profile></Profile></PrivateRoute>,
       },
       {
         path: "/connections",
@@ -63,6 +60,10 @@ const router = createBrowserRouter([
             <Connections></Connections>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/*",
+        Component: Error,
       },
     ],
   },

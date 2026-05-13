@@ -1,21 +1,32 @@
 import React, { use, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
-import axios from "axios";
+// import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router";
 
 import { toast, ToastContainer } from "react-toastify";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { updateProfile } from "firebase/auth";
+import { useContext } from "react";
+import { useEffect } from "react";
 
 const Register = () => {
-  const { signInWithGoogle, createUser, setLoading, loading } =
-    use(AuthContext);
+  const { signInWithGoogle, createUser, setLoading, loading,user } =
+    useContext(AuthContext);
+
+  
+  const axiosSecure = useAxiosSecure();
   const [err, setError] = useState(" ");
   const navigate = useNavigate();
   const location = useLocation();
   const form = location.state || "/";
-
+  console.log(location.state);
   console.log(location, form);
-
+React.useEffect(() => {
+  if (user) {
+    navigate(form);
+  }
+}, [user, navigate, form]);
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -35,6 +46,7 @@ const Register = () => {
 
     if (password.length < 6) {
       setError("Password should be at least 6 characters long");
+      return;
     } else if (!/[A-Z]/.test(password)) {
       setError("Password should contain at least one uppercase letter");
       return;
@@ -46,9 +58,17 @@ const Register = () => {
     }
 
     try {
-      await createUser(email, password);
+      const result = await createUser(email, password);
 
-      await axios.post("http://localhost:3000/users", newUser);
+      await axiosSecure.post("/users", newUser);
+
+      await updateProfile(result.user, {
+        displayName: name,
+        photoURL: photo,
+
+        // setLoading(false)
+        // email:email
+      });
 
       Swal.fire({
         position: "center",
@@ -57,13 +77,13 @@ const Register = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-
+      setLoading(false);
       navigate(form);
     } catch (error) {
       console.log(error);
 
       toast.warning("an account with this email already exists");
-      // setLoading(false)
+      setLoading(false);
       // console.log(loading)
     }
   };
@@ -82,12 +102,12 @@ const Register = () => {
         };
         console.log(newUser);
 
-        axios
-          .post("http://localhost:3000/users", newUser)
+        axiosSecure
+          .post("/users", newUser)
           .then((data) => {
             console.log("after saving", data);
           })
-          .then((error) => {
+          .catch((error) => {
             console.log(error);
           });
 
@@ -178,7 +198,7 @@ const Register = () => {
                 ></path>
               </g>
             </svg>
-            SignUp with Google
+            Continue with Google
           </button>
         </fieldset>
       </form>

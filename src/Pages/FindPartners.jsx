@@ -4,26 +4,28 @@ import axios from "axios";
 import { use } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { FaSearch } from "react-icons/fa";
-
+import useAxios from "../hooks/useAxios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const FindPartners = () => {
   const [users, setUsers] = useState([]);
-  const [search,setSearch]=useState('')
-  const { user } = use(AuthContext);
-
-  const allUsers = users;
+  const [search, setSearch] = useState("");
+  const { user, loading } = use(AuthContext);
+  const axiosInstance = useAxios();
+  const axiosSecure = useAxiosSecure();
+  if (loading) return;
+  // const allUsers = users;
 
   const handleSearch = (e) => {
-  
-   setSearch(e.target.value.toLowerCase())
-   
+    setSearch(e.target.value.toLowerCase());
 
     // setUsers(filtered)
   };
 
- const filtered=users.filter((user) =>
-  // console.log(user.subject)
-    user.subject.toLowerCase().includes(search));
+  const filtered = users.filter((user) =>
+    // console.log(user.subject)
+    user.subject.toLowerCase().includes(search),
+  );
   const handleSortChnage = (e) => {
     e.preventDefault();
     const selected = e.target.value;
@@ -38,56 +40,115 @@ const FindPartners = () => {
   };
 
   const defaultUsers = () => {
-    axios
-      .get(`http://localhost:3000/studyprofiles?email=${user?.email}`)
-      .then((res) => {
-        setUsers(res.data);
-        // console.log(users)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (!loading) {
+      if (user) {
+        axiosSecure
+          .get(`/studyprofiles?email=${user?.email}`)
+          .then((res) => {
+            setUsers(res.data);
+            // console.log(users)
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axiosSecure
+          .get(`/studyprofiles`)
+          .then((res) => {
+            setUsers(res.data);
+            // console.log(users)
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
   };
   const highToLow = () => {
-    axios
-      .get(`http://localhost:3000/hightolow?email=${user?.email}`)
-      .then((res) => {
-        setUsers(res.data);
-        console.log(users);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (!loading) {
+      if (user) {
+        axiosSecure
+          .get(`/hightolow?email=${user?.email}`)
+          .then((res) => {
+            setUsers(res.data);
+            console.log(users);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axiosSecure
+          .get(`/hightolow`)
+          .then((res) => {
+            setUsers(res.data);
+            console.log(users);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
   };
 
   const lowToHigh = () => {
-    axios
-      .get(`http://localhost:3000/lowtohigh?email=${user?.email}`)
-      .then((res) => {
-        setUsers(res.data);
-        console.log(users);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (!loading) {
+      if (user) {
+        axiosSecure
+        .get(`/lowtohigh?email=${user?.email}`)
+        .then((res) => {
+          setUsers(res.data);
+          console.log(users);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }else{
+        axiosSecure
+        .get(`/lowtohigh`)
+        .then((res) => {
+          setUsers(res.data);
+          console.log(users);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
+    }
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/studyprofiles?email=${user?.email}`)
-      .then((res) => {
-        setUsers(res.data);
-        // console.log(users)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [user]);
+    // if (loading) return;
 
+    if (user) {
+        axiosSecure
+          .get(`/studyprofiles?email=${user?.email}`)
+          .then((res) => {
+            setUsers(res.data);
+            // console.log(users)
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axiosSecure
+          .get(`/studyprofiles`)
+          .then((res) => {
+            setUsers(res.data);
+            // console.log(users)
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+   
+  }, [user, axiosSecure, loading]);
+  console.log(users);
+  // if (loading) return;
   // console.log(users);
   return (
     <div>
-      <div className="text-white flex mt-10 mb-5 items-center justify-between mx-auto w-11/12">
+      <div className="text-white flex flex-col md:flex-row mt-10 mb-5 items-center justify-between mx-auto w-11/12">
         <div className="flex items-center gap-2 ">
           <label className="font-semibold text-black w-30">Sort by:</label>
           <select
@@ -108,13 +169,12 @@ const FindPartners = () => {
             placeholder="Search partners..."
             className="bg-black text-white font-semibold input w-full"
           />
-          
         </div>
       </div>
 
       <div className="grid lg:grid-cols-2 w-11/12 mx-auto gap-3 ">
         {filtered.map((partner) => (
-          <Partner key={partner._id} partner={partner}></Partner>
+          <Partner key={partner?._id} partner={partner}></Partner>
         ))}
       </div>
     </div>

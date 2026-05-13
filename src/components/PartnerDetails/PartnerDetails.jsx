@@ -1,37 +1,57 @@
 import React, { use, useEffect, useState } from "react";
-import { Navigate, useLoaderData, useNavigate } from "react-router";
+import { Navigate, useLoaderData, useNavigate, useParams } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
-import axios from "axios";
+// import axios from "axios";
 import Swal from "sweetalert2";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import axios from "axios";
 
 const PartnerDetails = () => {
+  const [partner, setPartner] = useState(null);
   const { user } = use(AuthContext);
-  const [exists, setExists] = useState(false);
 
-  const [myStudyProfiles, setMyStudyProfiles] = useState([]);
+  const { id } = useParams();
+
+  const axiosSecure = useAxiosSecure();
+  const [myStudyProfiles, setMyStudyProfiles] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/studyprofiles?email=${user?.email}`)
-      .then((res) => {
-        setMyStudyProfiles(res.data);
-      });
-  }, [user]);
-  // const [formValue, setFormValue] = useState({});
+    axiosSecure.get(`/mystudyprofile?email=${user?.email}`).then((res) => {
+      setMyStudyProfiles(res.data);
+      // console.log(res.data[0])
+      // console.log(user.photoURL)
+    });
+  }, [user,axiosSecure]);
 
-  // const handleFormValue = (e) => {
-  //   e.preventDefault();
+  useEffect(() => {
+    axiosSecure.get(`/mystudyprofile?id=${id}`).then((res) => {
+      setPartner(res.data);
+    });
+  }, [id,axiosSecure]);
+console.log('partner',partner)
+console.log('profile',myStudyProfiles)
+  // useEffect(()=>{
+  //  const res= axiosSecure.get(`/users/${id}`)
+  //  const partner=res.data;
+  // console.log(myStudyProfiles);
+  // console.log(partner);
+  // .then(res=>{setPartner(res.data)
+  //   console.log(partner)
+  // });
+  // },[id,axiosSecure])
 
-  //   setFormValue({
-
-  //   });
-  // };
-  const partner = useLoaderData();
+  // const partner = useLoaderData();
   // console.log(partner);
   const partnerstotal = partner?.partnerCount;
-  const [currentPartner, setCurrentPartner] = useState(partnerstotal);
+  const [currentPartner, setCurrentPartner] = useState(null);
+
+  useEffect(() => {
+    if (partner?.partnerCount !== undefined) {
+      setCurrentPartner(partner?.partnerCount);
+    }
+  }, [partner]);
   // console.log("partner ", partner?.partnerCount);
 
   //  console.log(user?.email)
@@ -40,19 +60,10 @@ const PartnerDetails = () => {
     const preferredSchedule = e.target.preferredSchedule.value;
     const goal = e.target.goal.value;
 
-    const res = await axios.get(
-      `http://localhost:3000/specificuser?email=${user?.email}`,
-    );
+    const res = await axiosSecure.get(`/specificuser?email=${user?.email}`);
 
     const userInfo = res.data[0];
-    // console.log("userdetailsfull", userInfo); 
-    // console.log("user", userInfo?.partnerCount);
-    // console.log(userInfo);
-    // const connectedId = partner?._id;
-    // console.log("connected ", connectedId);
-    //  console.log(userInfo);
-    // const connectorId = userInfo?._id;
-    // console.log("connector ", connectorId);
+
     const date = new Date().toLocaleDateString();
     // console.log(date);
 
@@ -68,7 +79,7 @@ const PartnerDetails = () => {
       availabilityTime: partner?.availabilityTime,
       subject: partner?.subject,
       experienceLevel: partner?.experienceLevel,
-      connectedImage:partner?.profileImage,
+      connectedImage: partner?.profileImage,
       location: partner?.location,
       goal: goal,
       preferredSchedule: preferredSchedule,
@@ -76,12 +87,11 @@ const PartnerDetails = () => {
     };
 
     // console.log("user", user);
-    
+
     // console.log(res.data);
     const myConnections = userInfo.partnerCount;
     // console.log(myConnections);
     const partnerConnections = partner.partnerCount;
-    
 
     if (myStudyProfiles.length === 0) {
       document.getElementById("my_modal_1").close();
@@ -97,65 +107,71 @@ const PartnerDetails = () => {
         transition: Bounce,
       });
 
-      navigate("/createaprofile");
+      setTimeout(() => {
+        navigate("/createaprofile");
+      }, 1500);
       return;
     }
 
-    await axios
-      .post(`http://localhost:3000/connections`, newConnection)
-      .then((res) => {
+    await axiosSecure.post(`/connections`, newConnection).then((res) => {
+      document.getElementById("my_modal_1").close();
+
+      if (res.data.insertedId) {
+        toast.success("Request Sent", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        console.log(res.data);
+        console.log(newConnection);
+
+        axiosSecure.patch(`/specificuser?email=${user?.email}`, {
+          partnerCount: myConnections + 1,
+        });
+
+        axiosSecure.patch(`/specificuser?email=${partner?.email}`, {
+          partnerCount: partnerConnections + 1,
+        });
+
+        setCurrentPartner(currentPartner + 1);
+      } else {
         document.getElementById("my_modal_1").close();
 
-        if (res.data.insertedId) {
-          toast.success("Request Sent", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-          });
-          console.log(res.data);
-          console.log(newConnection);
-
-          axios.patch(
-            `http://localhost:3000/specificuser?email=${user?.email}`,
-            { partnerCount: myConnections + 1 },
-          );
-
-          axios.patch(
-            `http://localhost:3000/specificuser?email=${partner?.email}`,
-            { partnerCount: partnerConnections + 1 },
-          );
-
-          setCurrentPartner(currentPartner + 1);
-        } else {
-          document.getElementById("my_modal_1").close();
-
-          console.log(res.data);
+        console.log(res.data);
         toast.error("Already sent a request", {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                    transition: Bounce,
-                  });
-        }
-      });
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+      }
+    });
   };
   // console.log(partner);
 
+  if (!partner) {
+    return (
+      <div>
+        <span className="loading loading-dots loading-xl"></span>
+      </div>
+    );
+  }
+
   return (
-    <div className="my-10 w-11/12 lg:w-8/12 space-y-5 text-black mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col gap-5  md:h-130 h-130">
+    <div className="my-10 w-11/12 lg:w-8/12 space-y-5 text-black mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col gap-5  md:h-130 h-150">
       <ToastContainer></ToastContainer>
-     <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4">
         <img
           src={partner.profileImage}
           alt={partner.name}
@@ -216,10 +232,7 @@ const PartnerDetails = () => {
         </div>
       </div>
 
-    
-
       <form onSubmit={handlePartnerRequest}>
-        
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_1").showModal()}
@@ -253,13 +266,11 @@ const PartnerDetails = () => {
 
             <div className="modal-action">
               <div method="dialog">
-                
                 <button type="submit" className="btn">
                   Done
                 </button>
               </div>
             </div>
-            
           </div>
         </dialog>
       </form>

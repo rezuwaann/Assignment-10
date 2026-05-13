@@ -1,16 +1,32 @@
 import React, { use, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 
-import axios from "axios";
+// import axios from "axios";
 import Swal from "sweetalert2";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useContext } from "react";
 
 const CreateAProfile = () => {
-  const { user } = use(AuthContext);
-  const [userInfo, setUserInfo] = useState({});
+  const { user } = useContext(AuthContext);
+  const [userInfo, setUserInfo] = useState(null);
+  const axiosSecure = useAxiosSecure();
+
+  useEffect(() => {
+    axiosSecure
+      .get(`/specificuser?email=${user?.email}`)
+      .then((res) => {
+        setUserInfo(res.data[0]);
+        console.log(res.data)
+        console.log(res)
+        console.log(user)
+      })
+      .catch((error) => console.log(error));
+  }, [user, axiosSecure]);
 
   const { name, email, profileImage, partnerCount, rating, location } =
-    userInfo;
+    userInfo || {};
+  console.log(userInfo);
 
   // console.log(userInfo.experienceLevel);
   const handleCreateUser = (e) => {
@@ -23,15 +39,15 @@ const CreateAProfile = () => {
 
     // console.log(studymode, availability, subject, experience, location);
 
-    if (subject==='Subject') {
+    if (subject === "Subject") {
       toast.error("Choose Subject");
-          return;
-    }else if (studymode==='Study Mode') {
+      return;
+    } else if (studymode === "Study Mode") {
       toast.error("Choose Study mode");
-          return;
-    }else if (experience==='Experience Level') {
+      return;
+    } else if (experience === "Experience Level") {
       toast.error("Choose experience");
-          return;
+      return;
     }
 
     const updatedData = {
@@ -48,8 +64,8 @@ const CreateAProfile = () => {
       location: location,
     };
 
-    axios
-      .post(`http://localhost:3000/studyprofiles`, updatedData)
+    axiosSecure
+      .post(`/studyprofiles`, updatedData)
       .then((res) => {
         // console.log(res);
         if (res.data.insertedId) {
@@ -65,8 +81,7 @@ const CreateAProfile = () => {
             transition: Bounce,
           });
         } else {
-          
-        toast.error("You already created an profile with this info", {
+          toast.error("You already created an profile with this info", {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -81,25 +96,14 @@ const CreateAProfile = () => {
       })
       .catch((error) => console.log(error));
 
-    axios.patch(`http://localhost:3000/specificuser?email=${email}`, {
-      location: location,
+    axiosSecure.patch(`/specificuser?email=${email}`, {
+      studyMode: studymode,
       availabilityTime: availability,
+      subject: subject,
+      experienceLevel: experience,
+      location: location,
     });
   };
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3000/specificuser?email=${user?.email}`)
-      .then((res) => setUserInfo(res.data[0]))
-      .catch((error) => console.log(error));
-    // console.log(userInfo)
-
-    // fetch)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setUserInfo(data[0]);
-    //   });
-  }, [user]);
 
   // console.log(userInfo);
 
@@ -109,8 +113,8 @@ const CreateAProfile = () => {
 
   return (
     <div>
-      <ToastContainer/>
-      <div className="gap-5 p-7 shadow-xl flex items-center hover:shadow-2xl my-5 bg-white w-7/12 mx-auto">
+      <ToastContainer />
+      <div className="gap-5 p-7 shadow-xl flex items-center hover:shadow-2xl my-5 bg-white w-10/12 md:w-7/12 mx-auto">
         <div>
           <img
             className="mx-5 h-20 w-20 lg:w-25  lg:h-25 outline-2 rounded-full border-gray-600 border-2"
@@ -135,7 +139,7 @@ const CreateAProfile = () => {
 
       <form
         onSubmit={handleCreateUser}
-        className="text-black bg-white w-7/12 mt-5 mb-10 rounded-lg shadow-xl hover:shadow-2xl mx-auto p-7"
+        className="text-black bg-white w-10/12 md:w-7/12 mt-5 mb-10 rounded-lg shadow-xl hover:shadow-2xl mx-auto p-7"
       >
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-black">
@@ -155,7 +159,7 @@ const CreateAProfile = () => {
               <input
                 type="text"
                 readOnly
-                value={name|| ''}
+                value={name || ""}
                 className="input bg-white border-gray-500"
                 name="name"
               />
@@ -167,7 +171,7 @@ const CreateAProfile = () => {
               <input
                 type="text"
                 readOnly
-                value={email|| ''}
+                value={email || ""}
                 className="input bg-white border-gray-500"
                 name="email"
               />
@@ -214,7 +218,10 @@ const CreateAProfile = () => {
                 <option disabled={true}>Subject</option>
                 <option>English</option>
                 <option>Math</option>
-                <option>Programming</option>
+                <option>Machine Learning</option>
+                <option>UI/UX Design</option>
+                <option>Calculus</option>
+                <option>Digital Logic Design</option>
               </select>
             </div>
 
