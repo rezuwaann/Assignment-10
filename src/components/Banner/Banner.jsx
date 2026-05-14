@@ -6,7 +6,7 @@ const Banner = () => {
 
   useEffect(() => {
     axios
-      .get(`https://studymate-server-sigma.vercel.app/banner`)
+      .get(`https://server-de-study-nate.onrender.com/banner`)
       .then((res) => {
         setUserInfo(res.data);
       })

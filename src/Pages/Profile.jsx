@@ -17,7 +17,7 @@ const axiosSecure=useAxiosSecure()
 
   useEffect(() => {
     axiosSecure
-      .get(`https://studymate-server-sigma.vercel.app/specificuser?email=${user?.email}`)
+      .get(`https://server-de-study-nate.onrender.com/specificuser?email=${user?.email}`)
       .then((res) => setUserInfo(res.data[0]))
       .catch((error) => console.log(error));
   }, [user,axiosSecure]);
