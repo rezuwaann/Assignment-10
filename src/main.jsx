@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       {
         path: `/partner/:id`,
         loader: ({ params }) =>
-          fetch(`https://server-de-study-nate.onrender.com/users/${params.id}`),
+          fetch(`https://studymate-server-sigma.vercel.app/users/${params.id}`),
         element: (
           <PrivateRoute>
             <PartnerDetails></PartnerDetails>

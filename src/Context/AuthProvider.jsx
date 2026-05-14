@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
   const signOutUser = () => {
     setLoading(true);
 
-    return fetch("https://server-de-study-nate.onrender.com/logout", {
+    return fetch("https://studymate-server-sigma.vercel.app/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {
@@ -61,7 +61,7 @@ const AuthProvider = ({ children }) => {
         console.log(currentUser);
         const loggedUser = { email: currentUser.email };
 
-        fetch("https://server-de-study-nate.onrender.com/jwt", {
+        fetch("https://studymate-server-sigma.vercel.app/jwt", {
           method: "POST",
           credentials: "include",
           headers: {

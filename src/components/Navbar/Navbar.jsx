@@ -13,7 +13,7 @@ const Navbar = () => {
   const navigate=useNavigate()
  if (user) {
    useEffect(()=>{
-    axiosSecure.get(`https://server-de-study-nate.onrender.com/specificuser?email=${user?.email}`)
+    axiosSecure.get(`https://studymate-server-sigma.vercel.app/specificuser?email=${user?.email}`)
     .then(res=>{
       setUserInfo(res.data[0])
     })

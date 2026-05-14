@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import useAuth from "./useAuth";
 
 const instance = axios.create({
-  baseURL: `https://server-de-study-nate.onrender.com`,
+  baseURL: `https://studymate-server-sigma.vercel.app`,
   withCredentials:true
 });
 

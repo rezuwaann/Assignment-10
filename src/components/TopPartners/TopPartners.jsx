@@ -7,7 +7,7 @@ const TopPartners = () => {
   
   useEffect(() => {
     axios
-      .get("https://server-de-study-nate.onrender.com/topstudypartners")
+      .get("https://studymate-server-sigma.vercel.app/topstudypartners")
       .then((res) => setTopPartners(res.data));
   }, []);
 
