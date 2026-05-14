@@ -1,7 +1,7 @@
 import React, { use, useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import { AuthContext } from "../../Context/AuthContext";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
@@ -10,7 +10,7 @@ const Navbar = () => {
 
   const [userInfo,setUserInfo]=useState({})
   const axiosSecure=useAxiosSecure();
-  
+  const navigate=useNavigate()
  if (user) {
    useEffect(()=>{
     axiosSecure.get(`https://server-de-study-nate.onrender.com/specificuser?email=${user?.email}`)
@@ -97,7 +97,8 @@ const Navbar = () => {
               {links}
             </ul>
           </div>
-          <img src={logo} alt="" className="h-22 w-35" />
+
+          <img onClick={()=>navigate('/')} src={logo} alt="" className="h-22 w-35" />
         </div>
         <div className="navbar hidden xl:flex">
           <ul className="menu menu-horizontal px-1 gap-2">{links}</ul>
