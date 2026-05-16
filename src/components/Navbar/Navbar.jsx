@@ -121,7 +121,7 @@ const Navbar = () => {
               >
                 <li>
                  <Link className="font-semibold" to={"/profile"}>
-                    Profie
+                    Profile
                   </Link>
                 </li>
                 <li>
